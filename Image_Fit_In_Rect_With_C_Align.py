@@ -81,7 +81,7 @@ def test_image_fit_in_rect_with_c_align_center_and_print():
         keep_aspect_ratio=True,
     )
 
-    pdf_file_name: str = "test_image_fit_in_rect_with_c_align_center_and_print.pdf"
+    pdf_file_name: str = "Image_Fit_In_Rect_With_C_Align.pdf"
     save_to_output_folder(
         pdf=pdf,
         pdf_file_name=pdf_file_name,

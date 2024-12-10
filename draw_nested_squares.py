@@ -3,6 +3,8 @@ from click import style
 from fpdf import FPDF
 import fpdf
 
+# https://py-pdf.github.io/fpdf2/
+
 
 def save_to_output_folder(
     pdf: FPDF,
