@@ -1,6 +1,6 @@
 import datetime
 import os
-from fpdf import FPDF, XPos
+from fpdf import FPDF
 import fpdf
 from Draw_Grid_2 import Draw_Grid_2
 from Add_Image import Add_Image
@@ -12,9 +12,6 @@ class Draw_Wallet:
     # A4 Metric: 210 x 297 mm
     def __init__(
         self,
-        # line_distance: int = 5,
-        # grid_height: int = 125,
-        # grid_width: int = 209,
     ):
         self.grid_line_distance: int = 5
         self.current_directory = os.getcwd()
@@ -41,29 +38,45 @@ class Draw_Wallet:
         self.A4_width: int = 210
 
         self.l_r_margin: int = 4
+        self.top_margin: int = 5
         self.grid_width: int = self.A4_width - 2 * self.l_r_margin
         # self.A4_middle_width: int = self.A4_width / 2
         self.A4_middle_width: int = self.grid_width / 2
         self.columns_count = 3
         # self.column_width: int = self.A4_width / self.columns_count
         self.column_width: int = self.grid_width / self.columns_count
-        self.column_1_border: int = self.column_width
-
-        self.column_2_border: int = self.column_width + self.column_width
-        self.column_1_mid: int = self.column_width / 2
-        self.column_2_mid: int = self.column_width + self.column_width / 2
-        self.column_3_mid: int = (
-            self.column_width + self.column_width + self.column_width / 2
+        self.column_1_border: int = self.l_r_margin + self.column_width
+        self.column_2_border: int = (
+            self.l_r_margin + self.column_width + self.column_width
         )
-        self.grid_height: int = 125
+        self.column_3_border: int = (
+            self.l_r_margin + self.column_width + self.column_width + self.column_width
+        )
+
+        self.column_1_mid: int = self.l_r_margin + self.column_width / 2
+        self.column_2_mid: int = (
+            self.l_r_margin + self.column_width + self.column_width / 2
+        )
+        self.column_3_mid: int = (
+            self.l_r_margin
+            + self.column_width
+            + self.column_width
+            + self.column_width / 2
+        )
+
+        self.credit_card_height_mm: float = 54
+        self.row_height: float = (
+            self.credit_card_height_mm
+        )  # self.grid_height / self.rows_count
+        self.rows_count: int = 2
+        # self.grid_height: int = 125
+        self.grid_height: int = self.rows_count * self.credit_card_height_mm
         self.half_height: int = self.grid_height / 2
         self.dash: float = 0.2
         self.gap: float = 1
 
-        self.rows_count: int = 2
-        self.row_height: int = self.grid_height / self.rows_count
-        self.row_1_mid: int = self.row_height / 2
-        self.row_2_mid: int = self.row_height + self.row_height / 2
+        self.row_1_mid: int = self.top_margin + self.row_height / 2
+        self.row_2_mid: int = self.top_margin + self.row_height + self.row_height / 2
         self.text_size_1: int = 15
         self.font_size_1: int = 15
         self.text_size_2: int = 10
@@ -81,23 +94,24 @@ class Draw_Wallet:
             r=10,
         )
 
-        # x1: float = 1
-        # y1: float = self.half_height
-        # x2: float = self.width  # + (self.line_distance / 2)
-        # y2: float = self.half_height
-
         pdf.line(
             x1=self.column_1_border,
-            y1=0,
+            y1=self.top_margin,
             x2=self.column_1_border,
-            y2=self.grid_height,
+            y2=self.top_margin + self.grid_height,
         )
         pdf.line(
             x1=self.column_2_border,
-            y1=0,
+            y1=self.top_margin,
             x2=self.column_2_border,
-            y2=self.grid_height,
+            y2=self.top_margin + self.grid_height,
         )
+        # pdf.line(
+        #     x1=self.column_3_border,
+        #     y1=self.top_margin,
+        #     x2=self.column_3_border,
+        #     y2=self.top_margin + self.grid_height,
+        # )
 
     def save_to_output_folder(
         self,
@@ -116,7 +130,7 @@ class Draw_Wallet:
                 name=file_path,
             )
             print(" ")
-            print(f"completed saved here: {file_path}")
+            print(f"saved pdf here: {file_path}")
             return file_path
         except Exception as e:
 
@@ -303,6 +317,7 @@ class Draw_Wallet:
             height=self.grid_height,
             width=self.grid_width,
             l_r_margin=self.l_r_margin,
+            top_margin=self.top_margin,
         )
         self.draw_vert_fold_lines(pdf=pdf)
         # public qr code to column3  and row 2
@@ -330,14 +345,6 @@ class Draw_Wallet:
         # add logo to column 1 row 2
         logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
         logo_y: int = self.row_2_mid - self.logo_height_1 / 2
-        # self.image_adder.add_image_to_pos(
-        #     pdf=pdf,
-        #     img_path=self.doge_logo_path,
-        #     width=self.logo_width_1,
-        #     height=self.logo_height_1,
-        #     x=logo_x,
-        #     y=logo_y,
-        # )
         self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path_2,
@@ -382,16 +389,8 @@ class Draw_Wallet:
             x=priv_qr_x + self.img_width - self.x_offset / 2,  # (self.text_size_1 / 3)
             y=priv_qr_y + self.img_height,
         )
-        # self.add_vertical_text_to_pos_3(
-        #     pdf=pdf,
-        #     text=priv_key,
-        #     angle=text_angle,
-        #     text_size=self.text_size_2,
-        # )
-        # pub_address
-        text_2_2_x: float = (
-            pub_qr_x - pdf.font_size
-        )  # pub_qr_x - (self.text_size_1 / 3)
+        # column 1 row 1
+        text_2_2_x: float = self.column_1_mid - (self.img_width / 2) - self.x_offset
         text_2_2_y: float = priv_qr_y + pdf.font_size
         self.add_horizontal_text_to_pos_C_fill(
             pdf=pdf,
@@ -430,18 +429,20 @@ class Draw_Wallet:
             y=text_1_3_y,
             text_size=self.text_size_1,
         )
-        # pdf.set_xy(
-        #     x=pub_qr_x + self.img_width - self.x_offset / 2,  # (self.text_size_1 / 3)
-        #     y=pub_qr_y + self.img_height,
-        # )
-        # self.add_vertical_text_to_pos_3(
-        #     pdf=pdf,
-        #     text=pub_address,
-        #     angle=text_angle,
-        #     text_size=self.text_size_2,
-        # )
+
+        sqare_x: float = self.column_1_border + 2
+        sqare_y: float = self.top_margin + self.half_height + 2
+        sqare_w: float = self.column_width - 4
+        sqare_h: float = self.row_height - 4
+        self.add_white_sqare_to_pos(
+            pdf=pdf,
+            x=sqare_x,
+            y=sqare_y,
+            w=sqare_w,
+            h=sqare_h,
+        )
         date_x: int = self.column_1_border  # + (self.text_size_2 / 3)
-        date_y: int = self.half_height + (self.text_size_2 / 4)
+        date_y: int = self.top_margin + self.half_height + 2  # + (self.text_size_2 / 4)
         # Get the current date and time
         now = datetime.datetime.now()
 
@@ -455,19 +456,6 @@ class Draw_Wallet:
             y=date_y,
             text_size=self.text_size_2,
         )
-        sqare_x: float = self.column_1_border + 2  # (self.text_size_2 / 2)
-        sqare_y: float = (
-            self.half_height + (self.text_size_2 / 4) + (self.text_size_2 / 2)
-        )
-        sqare_w: float = self.column_width - 4
-        sqare_h: float = self.row_height - 10
-        self.add_white_sqare_to_pos(
-            pdf=pdf,
-            x=sqare_x,
-            y=sqare_y,
-            w=sqare_w,
-            h=sqare_h,
-        )
         logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
         logo_y = self.row_2_mid - (self.logo_height_2 / 2)
         self.image_adder.add_image_to_pos(
@@ -478,18 +466,8 @@ class Draw_Wallet:
             x=logo_x,
             y=logo_y,
         )
-        logo_x = self.column_1_mid - (self.logo_width_2 / 2)
-        logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        self.image_adder.add_image_to_pos(
-            pdf=pdf,
-            img_path=self.doge_logo_path,
-            width=self.logo_width_2,
-            height=self.logo_height_2,
-            x=logo_x,
-            y=logo_y,
-        )
-        # #logo column 3 row 1
-        # logo_x = self.column_3_mid - (self.logo_width_2 / 2)
+        # # #logo column 1 row 1
+        # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
         # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
         # self.image_adder.add_image_to_pos(
         #     pdf=pdf,
@@ -499,40 +477,51 @@ class Draw_Wallet:
         #     x=logo_x,
         #     y=logo_y,
         # )
+        # logo column 3 row 1
+        logo_x = self.column_3_mid - (self.logo_width_2 / 2)
+        logo_y = self.row_1_mid - (self.logo_height_2 / 2)
+        self.image_adder.add_image_to_pos(
+            pdf=pdf,
+            img_path=self.doge_logo_path,
+            width=self.logo_width_2,
+            height=self.logo_height_2,
+            x=logo_x,
+            y=logo_y,
+        )
+
+    def create_pdf(
+        self,
+    ) -> FPDF:
+        orientations: list[str] = [
+            "landscape",
+            "portrait",
+        ]
+        pdf_format: str = "a4"
+        margin: float = 0
+        pdf: FPDF = FPDF()
+        pdf.add_page(
+            orientation=orientations[1],
+            format=pdf_format,
+        )
+        pdf.set_margin(margin=margin)
+        pdf.set_margins(
+            left=margin,
+            top=margin,
+            right=0,
+        )
+        return pdf
 
 
 def test_draw_wallet() -> str:
 
-    orientations: list[str] = [
-        "landscape",
-        "portrait",
-    ]
-    pdf_format: str = "a4"
-    margin: float = 0
-    pdf = FPDF()
-    pdf.add_page(
-        orientation=orientations[1],
-        format=pdf_format,
-    )
-    pdf.set_margin(margin=margin)
-
-    # grid parameters
-    # grid_line_distance: int = 5
-    # grid_height: int = 125
-    # grid_width: int = 209
-    # doge:Private Key:        0e7f6b43ff9c134e0a295be2a0ccb6a6d2d32ec166b4dbcb4dda9e5a96c6eb71
-    # doge:Public_address:     D5FgLCifuP7ort5euG32K24YS23fT14x49
-    # image parameters
     priv_key: str = "0e7f6b43ff9c134e0a295be2a0ccb6a6d2d32ec166b4dbcb4dda9e5a96c6eb71"
     priv_qr_path: str = r"D:\11\02\13\pdf_utils\test_images\private_doge.png"
     pub_address: str = "D5FgLCifuP7ort5euG32K24YS23fT14x49"
     pub_qr_path: str = r"D:\11\02\13\pdf_utils\test_images\public_doge.png"
 
-    # img_width: int = 50
-    # img_height: int = img_width
-
     # initialize
     draw_wallet: Draw_Wallet = Draw_Wallet()
+    pdf: FPDF = draw_wallet.create_pdf()
     draw_wallet.draw_wallet(
         pdf=pdf,
         priv_key=priv_key,
@@ -554,4 +543,4 @@ if __name__ == "__main__":
 
     file_path: str = test_draw_wallet()
     printer: PDFPrinter = PDFPrinter()
-    printer.print_pdf(pdf_path=file_path)
+    # printer.print_pdf(pdf_path=file_path)

@@ -14,7 +14,8 @@ class Draw_Grid_2:
         self.dash: float = 0.2
         self.gap: float = 1
         self.A4_width: int = 210
-        self.l_r_margin: int = 0
+        self.l_r_margin: int = 4
+        self.top_margin: int = 5
 
     def save_to_output_folder(
         self,
@@ -47,9 +48,9 @@ class Draw_Grid_2:
         )
 
         x1: float = self.l_r_margin
-        y1: float = self.half_height
-        x2: float = width  # self.width  # + (self.line_distance / 2)
-        y2: float = self.half_height
+        y1: float = self.top_margin + self.half_height
+        x2: float = width + self.l_r_margin  # self.width  # + (self.line_distance / 2)
+        y2: float = self.top_margin + self.half_height
 
         pdf.line(
             x1=x1,
@@ -65,9 +66,9 @@ class Draw_Grid_2:
 
         count: int = int(self.height / self.line_distance) + 1
         x1: float = self.l_r_margin
-        y1: float = 0
+        y1: float = self.top_margin
         x2: float = self.width + self.l_r_margin
-        y2: float = 0
+        y2: float = self.top_margin
         for i in range(count):
             pdf.line(
                 x1=x1,
@@ -84,9 +85,9 @@ class Draw_Grid_2:
         # width: int = self.width
         count: int = int(self.width / self.line_distance) + 1
         x1: float = self.l_r_margin
-        y1: float = 0
+        y1: float = self.top_margin  # + self.half_height
         x2: float = self.l_r_margin
-        y2: float = self.height + (self.line_distance / 2)
+        y2: float = self.top_margin + self.height  # + (self.line_distance / 2)
         # x_line_distance: int = 1
         for i in range(count):
             pdf.line(
@@ -101,6 +102,7 @@ class Draw_Grid_2:
     def fill_grid_background(
         self,
         l_r_margin: float,
+        top_margin: float,
         width: float,
         pdf: FPDF,
         fill_color: int = 235,
@@ -109,9 +111,9 @@ class Draw_Grid_2:
         pdf.set_fill_color(r=fill_color)
         pdf.rect(
             x=l_r_margin,
-            y=0,
+            y=top_margin,
             w=width,
-            h=self.height + self.line_distance / 2,
+            h=self.height,  # + self.line_distance / 2
             # style="FD",
             style=fpdf.enums.RenderStyle.DF,
             round_corners=True,
@@ -158,10 +160,12 @@ class Draw_Grid_2:
         height: int,
         width: int,
         l_r_margin: int = 2,
+        top_margin: int = 5,
     ):
         self.l_r_margin = l_r_margin
         self.line_distance = line_distance
         self.height = height
+        self.top_margin = top_margin
         # if width + 2 * l_r_margin >= self.A4_width:
         #     width = self.A4_width - 2 * l_r_margin
         self.width = width
@@ -169,6 +173,7 @@ class Draw_Grid_2:
 
         self.fill_grid_background(
             l_r_margin=l_r_margin,
+            top_margin=top_margin,
             width=width,
             pdf=pdf,
         )
