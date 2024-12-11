@@ -3,9 +3,13 @@ from fpdf import FPDF
 import fpdf
 
 
-class Draw_Grid_2:
+class Grid_Generator:
     # A4 Metric: 210 x 297 mm
-    def __init__(self):
+    def __init__(
+        self,
+        l_r_margin: float = 5,
+        top_margin: float = 5,
+    ):
         self.height: int = 125
         self.half_height: int = self.height / 2
         self.width: int = 210
@@ -13,8 +17,8 @@ class Draw_Grid_2:
         self.dash: float = 0.2
         self.gap: float = 1
         self.A4_width: int = 210
-        self.l_r_margin: int = 4
-        self.top_margin: int = 5
+        self.l_r_margin: float = l_r_margin
+        self.top_margin: float = top_margin
 
     def save_to_output_folder(
         self,
@@ -100,17 +104,14 @@ class Draw_Grid_2:
 
     def fill_grid_background(
         self,
-        l_r_margin: float,
-        top_margin: float,
         width: float,
         pdf: FPDF,
         fill_color: int = 235,
     ):
-        # self.l_r_margin = l_r_margin
         pdf.set_fill_color(r=fill_color)
         pdf.rect(
-            x=l_r_margin,
-            y=top_margin,
+            x=self.l_r_margin,
+            y=self.top_margin,
             w=width,
             h=self.height,  # + self.line_distance / 2
             # style="FD",
@@ -150,7 +151,7 @@ class Draw_Grid_2:
         self.half_height: int = self.height / 2
         self.draw_horizontal_lines(pdf=pdf)
         self.draw_vertical_lines(pdf=pdf)
-        self.draw_half_height_line(pdf=pdf)
+        self.draw_half_height_line(pdf=pdf, width=width)
 
     def draw_grid_03(
         self,
@@ -158,21 +159,13 @@ class Draw_Grid_2:
         line_distance: int,
         height: int,
         width: int,
-        l_r_margin: int = 2,
-        top_margin: int = 5,
     ):
-        self.l_r_margin = l_r_margin
         self.line_distance = line_distance
         self.height = height
-        self.top_margin = top_margin
-        # if width + 2 * l_r_margin >= self.A4_width:
-        #     width = self.A4_width - 2 * l_r_margin
         self.width = width
         self.half_height: int = self.height / 2
 
         self.fill_grid_background(
-            l_r_margin=l_r_margin,
-            top_margin=top_margin,
             width=width,
             pdf=pdf,
         )
@@ -184,24 +177,28 @@ class Draw_Grid_2:
 
 def test_01():
     height: int = 125
-    width: int = 209
+    width: int = 150
     line_distance: int = 5
     # current_directory = os.getcwd()
     # output_folder_name: str = "outputs"
     # file_path: str = os.path.join(current_directory, output_folder_name, pdf_file_name)
-
-    draw_grid_2: Draw_Grid_2 = Draw_Grid_2()
+    l_r_margin: float = 5
+    top_margin: float = 5
+    grid_generator: Grid_Generator = Grid_Generator(
+        l_r_margin=l_r_margin,
+        top_margin=top_margin,
+    )
     pdf = FPDF()
     pdf.add_page()
-    draw_grid_2.draw_grid_01(
+    grid_generator.draw_grid_01(
         pdf=pdf,
         line_distance=line_distance,
         height=height,
         width=width,
     )
 
-    pdf_file_name: str = "draw_grid_2_test_01.pdf"
-    draw_grid_2.save_to_output_folder(
+    pdf_file_name: str = "Grid_Generator_test_01.pdf"
+    grid_generator.save_to_output_folder(
         pdf=pdf,
         pdf_file_name=pdf_file_name,
     )
@@ -217,39 +214,45 @@ def test_01():
 
 def test_02():
     height: int = 125
-    width: int = 209
+    width: int = 150
     line_distance: int = 5
-    draw_grid_2: Draw_Grid_2 = Draw_Grid_2()
+    grid_generator: Grid_Generator = Grid_Generator()
     pdf = FPDF()
     pdf.add_page()
-    draw_grid_2.draw_grid_02(
+    grid_generator.draw_grid_02(
         pdf=pdf,
         line_distance=line_distance,
         height=height,
         width=width,
     )
-    pdf_file_name: str = "draw_grid_2_test_02.pdf"
-    draw_grid_2.save_to_output_folder(
+    pdf_file_name: str = "Grid_Generator_test_02.pdf"
+    grid_generator.save_to_output_folder(
         pdf=pdf,
         pdf_file_name=pdf_file_name,
     )
 
 
 def test_03():
-    height: int = 125
-    width: int = 209
+    height: int = 100
+    width: int = 180
     line_distance: int = 5
-    draw_grid_2: Draw_Grid_2 = Draw_Grid_2()
     pdf = FPDF()
     pdf.add_page()
-    draw_grid_2.draw_grid_03(
+
+    l_r_margin: float = 5
+    top_margin: float = 5
+    grid_generator: Grid_Generator = Grid_Generator(
+        l_r_margin=l_r_margin,
+        top_margin=top_margin,
+    )
+    grid_generator.draw_grid_03(
         pdf=pdf,
         line_distance=line_distance,
         height=height,
         width=width,
     )
-    pdf_file_name: str = "draw_grid_2_test_03.pdf"
-    draw_grid_2.save_to_output_folder(
+    pdf_file_name: str = "Grid_Generator_test_03.pdf"
+    grid_generator.save_to_output_folder(
         pdf=pdf,
         pdf_file_name=pdf_file_name,
     )

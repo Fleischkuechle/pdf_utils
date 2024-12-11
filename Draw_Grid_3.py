@@ -3,7 +3,7 @@ from fpdf import FPDF
 import fpdf
 
 
-class Draw_Grid_2:
+class Draw_Grid_3:
     # A4 Metric: 210 x 297 mm
     def __init__(self):
         self.height: int = 125
@@ -101,7 +101,7 @@ class Draw_Grid_2:
 
 
 def test_grid():
-    draw_grid_2: Draw_Grid_2 = Draw_Grid_2()
+    draw_grid_2: Draw_Grid_3 = Draw_Grid_3()
     pdf = FPDF()
     pdf.add_page()
     draw_grid_2.draw_horizontal_lines(pdf=pdf)

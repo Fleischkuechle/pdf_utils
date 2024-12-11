@@ -2,7 +2,7 @@ import datetime
 import os
 from fpdf import FPDF
 import fpdf
-from Grid_Generator import Grid_Generator
+from Draw_Grid_2 import Draw_Grid_2
 from Add_Image import Add_Image
 from PDFPrinter import PDFPrinter
 
@@ -12,11 +12,7 @@ class Draw_Wallet:
     # A4 Metric: 210 x 297 mm
     def __init__(
         self,
-        l_r_margin: float = 5,
-        top_margin: float = 5,
     ):
-        self.l_r_margin: float = l_r_margin
-        self.top_margin: float = top_margin
         self.grid_line_distance: int = 5
         self.current_directory = os.getcwd()
         self.doge_logo_file_name: str = "dogecoin.png"  # "draw_an_hourglass_shape.pdf"
@@ -41,6 +37,8 @@ class Draw_Wallet:
         # A4 Metric: 210 x 297 mm
         self.A4_width: int = 210
 
+        self.l_r_margin: int = 4
+        self.top_margin: int = 5
         self.grid_width: int = self.A4_width - 2 * self.l_r_margin
         # self.A4_middle_width: int = self.A4_width / 2
         self.A4_middle_width: int = self.grid_width / 2
@@ -86,10 +84,7 @@ class Draw_Wallet:
 
         self.img_width: int = 50
         self.img_height: int = self.img_width
-        self.grid_generator: Grid_Generator = Grid_Generator(
-            l_r_margin=self.l_r_margin,
-            top_margin=self.top_margin,
-        )
+        self.grid_drawer: Draw_Grid_2 = Draw_Grid_2()
         self.image_adder: Add_Image = Add_Image()
 
     def draw_vert_fold_lines(self, pdf: FPDF):
@@ -316,11 +311,13 @@ class Draw_Wallet:
         pub_qr_path: str = "",
     ):
 
-        self.grid_generator.draw_grid_03(
+        self.grid_drawer.draw_grid_03(
             pdf=pdf,
             line_distance=self.grid_line_distance,
             height=self.grid_height,
             width=self.grid_width,
+            l_r_margin=self.l_r_margin,
+            top_margin=self.top_margin,
         )
         self.draw_vert_fold_lines(pdf=pdf)
         # public qr code to column3  and row 2
@@ -523,13 +520,7 @@ def test_draw_wallet() -> str:
     pub_qr_path: str = r"D:\11\02\13\pdf_utils\test_images\public_doge.png"
 
     # initialize
-
-    l_r_margin: float = 5
-    top_margin: float = 5
-    draw_wallet: Draw_Wallet = Draw_Wallet(
-        l_r_margin=l_r_margin,
-        top_margin=top_margin,
-    )
+    draw_wallet: Draw_Wallet = Draw_Wallet()
     pdf: FPDF = draw_wallet.create_pdf()
     draw_wallet.draw_wallet(
         pdf=pdf,
