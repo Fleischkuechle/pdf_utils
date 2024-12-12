@@ -84,28 +84,8 @@ if __name__ == "__main__":
             border=0,
             ln=1,
         )
-    # pdf.output(
-    #     name="Header_footer_page_break_and_image_example.pdf",
-    #     dest="F",
-    # )
     pdf_file_name: str = "Header_footer_page_break_and_image_example.pdf"
     pdf.save_to_output_folder(
         pdf=pdf,
         pdf_file_name=pdf_file_name,
     )
-    # current_directory = os.getcwd()
-    # pdf_file_name: str = "Header_footer_page_break_and_image_example.pdf"
-    # output_folder_name: str = "outputs"
-    # file_path: str = os.path.join(current_directory, output_folder_name, pdf_file_name)
-    # # pdf.output(file_path)
-    # try:
-    #     pdf.output(
-    #         name=file_path,
-    #         dest="F",
-    #     )
-    #     print(" ")
-    #     print(f"completed saved here: {file_path}")
-    # except Exception as e:
-
-    #     print(" ")
-    #     print(f"exception: {e}")

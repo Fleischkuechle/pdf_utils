@@ -37,7 +37,7 @@ import win32api
 import win32print
 import os
 
-current_directory = os.getcwd()
+# current_directory = os.getcwd()
 
 
 def save_to_output_folder(
