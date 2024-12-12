@@ -46,19 +46,3 @@ save_to_output_folder(
     pdf=pdf,
     pdf_file_name=pdf_file_name,
 )
-# current_directory = os.getcwd()
-# pdf_file_name: str = "draw_nested_squares.pdf"
-# output_folder_name: str = "outputs"
-# file_path: str = os.path.join(current_directory, output_folder_name, pdf_file_name)
-# # pdf.output(file_path)
-# try:
-#     pdf.output(name=file_path)
-#     print(" ")
-#     print(f"completed saved here: {file_path}")
-# except Exception as e:
-
-#     print(" ")
-#     print(f"exception: {e}")
-# # Example usage:
-# if __name__ == "__main__":
-#     test_print()

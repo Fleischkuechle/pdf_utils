@@ -49,24 +49,9 @@ pdf.image(
     w=pdf.epw / 2,
     x=pdf.epw / 2,
 )  # full page height, half page width, right half of the page
-# pdf.output("side-by-side.pdf")
 current_directory = os.getcwd()
-# pdf_file_name: str = "Side_by_side_images.pdf"
 pdf_file_name: str = "Side_by_side_images.pdf"
 save_to_output_folder(
     pdf=pdf,
     pdf_file_name=pdf_file_name,
 )
-# output_folder_name: str = "outputs"
-# file_path: str = os.path.join(current_directory, output_folder_name, pdf_file_name)
-# # pdf.output(file_path)
-# try:
-#     pdf.output(
-#         name=file_path,
-#     )
-#     print(" ")
-#     print(f"completed saved here: {file_path}")
-# except Exception as e:
-
-#     print(" ")
-#     print(f"exception: {e}")

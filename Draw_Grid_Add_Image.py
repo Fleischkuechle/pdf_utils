@@ -138,6 +138,7 @@ def test_draw_grid_add_image_center():
     grid_line_distance: int = 5
     grid_height: int = 125
     grid_width: int = 209
+
     # image parameters
     img_path: str = r"D:\11\02\13\FPDF_tests\test_images\Nerd123Logo.png"
     img_width: int = 50

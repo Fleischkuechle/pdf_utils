@@ -3,7 +3,6 @@ from fpdf import FPDF
 import fpdf
 
 # https://py-pdf.github.io/fpdf2/
-#
 
 
 def save_to_output_folder(
@@ -27,7 +26,6 @@ def save_to_output_folder(
         print(f"exception: {e}")
 
 
-##
 pdf = FPDF()
 pdf.add_page()
 width: int = 290
@@ -48,7 +46,6 @@ for i in range(count):
     )
     height = height - line_distance
     y_pos = y_pos + line_distance
-# pdf.output("draw_grid.pdf")
 pdf_file_name: str = "draw_grid.pdf"
 save_to_output_folder(
     pdf=pdf,

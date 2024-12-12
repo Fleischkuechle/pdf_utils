@@ -311,9 +311,9 @@ class Draw_Wallet:
         self,
         pdf: FPDF,
         priv_key: str = "",
-        priv_qr_path: str = "",
+        priv_qr_img_path: str = "",
         pub_address: str = "",
-        pub_qr_path: str = "",
+        pub_qr_img_path: str = "",
     ):
 
         self.grid_generator.draw_grid_03(
@@ -328,7 +328,7 @@ class Draw_Wallet:
         pub_qr_y: int = self.row_2_mid - self.img_height / 2
         self.image_adder.add_image_to_pos(
             pdf=pdf,
-            img_path=pub_qr_path,
+            img_path=pub_qr_img_path,
             width=self.img_width,
             height=self.img_height,
             x=pub_qr_x,
@@ -339,7 +339,7 @@ class Draw_Wallet:
         priv_qr_y: int = self.row_1_mid - self.img_height / 2
         self.image_adder.add_image_to_pos(
             pdf=pdf,
-            img_path=priv_qr_path,
+            img_path=priv_qr_img_path,
             width=self.img_width,
             height=self.img_height,
             x=priv_qr_x,
@@ -514,31 +514,53 @@ class Draw_Wallet:
         )
         return pdf
 
+    def get_test_images_folder_path(
+        self,
+    ) -> str:
+        current_directory: str = os.getcwd()
+        images_folder_name: str = "test_images"
+        images_folder_path: str = os.path.join(
+            current_directory,
+            images_folder_name,
+        )
+        return images_folder_path
+
 
 def test_draw_wallet() -> str:
-
-    priv_key: str = "0e7f6b43ff9c134e0a295be2a0ccb6a6d2d32ec166b4dbcb4dda9e5a96c6eb71"
-    priv_qr_path: str = r"D:\11\02\13\pdf_utils\test_images\private_doge.png"
-    pub_address: str = "D5FgLCifuP7ort5euG32K24YS23fT14x49"
-    pub_qr_path: str = r"D:\11\02\13\pdf_utils\test_images\public_doge.png"
-
-    # initialize
-
+    # init class
     l_r_margin: float = 5
     top_margin: float = 5
     draw_wallet: Draw_Wallet = Draw_Wallet(
         l_r_margin=l_r_margin,
         top_margin=top_margin,
     )
+    test_images_folder_path: str = draw_wallet.get_test_images_folder_path()
+
+    priv_key: str = "0e7f6b43ff9c134e0a295be2a0ccb6a6d2d32ec166b4dbcb4dda9e5a96c6eb71"
+    priv_qr_img_name: str = "private_doge.png"
+    priv_qr_img_path: str = os.path.join(
+        test_images_folder_path,
+        priv_qr_img_name,
+    )
+
+    pub_address: str = "D5FgLCifuP7ort5euG32K24YS23fT14x49"
+    pub_qr_img_name: str = "public_doge.png"
+    pub_qr_img_path: str = os.path.join(
+        test_images_folder_path,
+        pub_qr_img_name,
+    )
+    # cerate a empty pdf
     pdf: FPDF = draw_wallet.create_pdf()
+    # draw wallet on the pdf
     draw_wallet.draw_wallet(
         pdf=pdf,
         priv_key=priv_key,
-        priv_qr_path=priv_qr_path,
+        priv_qr_img_path=priv_qr_img_path,
         pub_address=pub_address,
-        pub_qr_path=pub_qr_path,
+        pub_qr_img_path=pub_qr_img_path,
     )
 
+    # saving the pdf
     pdf_file_name: str = "Draw_Wallet_test.pdf"
     file_path: str = draw_wallet.save_to_output_folder(
         pdf=pdf,
