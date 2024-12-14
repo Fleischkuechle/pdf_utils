@@ -55,6 +55,7 @@ class Draw_Grid_Add_Image:
         y: int = -1,
         orientation: str = "center",
     ):
+
         self.grid_drawer.draw_grid_01(
             pdf=pdf,
             line_distance=grid_line_distance,

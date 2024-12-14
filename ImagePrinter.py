@@ -135,12 +135,19 @@
 # This code is a basic example and may need to be adapted depending on your specific requirements.
 # This code provides a starting point for printing a PDF document from your Android app using Python. You can customize the code to suit your needs by adding more content to the PDF, configuring the PrintDocumentAdapter, and handling printing errors.
 
-from sys import flags
+# from sys import flags
+import io
+from fpdf import FPDF
 import win32print  # ignore
 import win32ui
 from PIL import Image as PIL_img
 from PIL import ImageWin
 import inspect
+import os
+import win32api
+import win32print
+from io import BytesIO
+import fitz  # PyMuPDF
 
 
 class ImagePrinter:
@@ -176,10 +183,10 @@ class ImagePrinter:
         ]
         self.printer_name = win32print.GetDefaultPrinter()
         # Check if the file path is a valid image file
-        if file_path == "":
-            raise ValueError("Filepath is empty: " + self.file_path)
-        if not self.is_image_file(self.file_path):
-            raise ValueError("Invalid image file path: " + self.file_path)
+        # if file_path == "":
+        #     raise ValueError("Filepath is empty: " + self.file_path)
+        # if not self.is_image_file(self.file_path):
+        #     raise ValueError("Invalid image file path: " + self.file_path)
 
     def print_image(self) -> None:
         """
@@ -203,6 +210,55 @@ class ImagePrinter:
 
         dib = ImageWin.Dib(image=opend_image)
         dib.draw(hDC.GetHandleOutput(), (0, 0, printer_size[0], printer_size[1]))
+
+        hDC.EndPage()
+        hDC.EndDoc()
+        hDC.DeleteDC()
+
+    # win32ui.CreatePrintDialog
+    def print_pil_image(
+        self,
+        image: PIL_img.Image,
+    ) -> None:
+        """
+        Prints the image to the default printer.
+        """
+
+        # Open a printer dialog
+        printer_name = win32print.GetDefaultPrinter()  # Get the default printer
+        hDC = win32ui.CreateDC()
+        hDC.CreatePrinterDC(printer_name)
+
+        PHYSICALWIDTH = 110
+        PHYSICALHEIGHT = 111
+
+        # hDC = win32ui.CreateDC()
+
+        # hDC.CreatePrinterDC(self.printer_name)
+        printer_size = hDC.GetDeviceCaps(PHYSICALWIDTH), hDC.GetDeviceCaps(
+            PHYSICALHEIGHT
+        )
+        hDC.StartDoc(self.file_path)
+        hDC.StartPage()
+        # win32api.ShellExecute(0, "print", pdf_path, f'/d:"{printer_name}"', ".", 0)
+        dib = ImageWin.Dib(
+            image=image,
+            # size=image.size,
+        )
+        #'L" for images that contain grayscale data,
+        # and "RGB" for images that contain color data.
+        # dib.mode = "RGB"
+        # dib.expose(handle=hDC.GetHandleOutput())
+        # margin_x=
+        # dib.draw(
+        #     hDC.GetHandleOutput(),
+        #     (0, 0, int(printer_size[0] * 0.95), int(printer_size[1] * 0.95)),
+        # )
+        dib.draw(
+            hDC.GetHandleOutput(),
+            (-5, 0, int(printer_size[0] * 0.96), printer_size[1]),
+        )
+        # dib.draw(hDC.GetHandleOutput(), (0, 0, image.size[0], image.size[1]))
 
         hDC.EndPage()
         hDC.EndDoc()
@@ -314,19 +370,150 @@ class ImagePrinter:
         # hDC.EndDoc()
         # hDC.DeleteDC()
 
+    def create_pdf_in_memory_alternative(
+        self,
+    ) -> bytes:
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", "B", 16)
+        pdf.cell(40, 10, "Hello World!")
+
+        # Save the PDF to a bytes buffer
+        # pdf_output: BytesIO = io.BytesIO()
+        pdf_output: bytearray = pdf.output()
+        # pdf_output.seek(0)  # Move to the beginning of the BytesIO buffer
+        # pdf_as_bytes: bytes = pdf_output.read()
+        return pdf_output  # pdf_output.read()
+
+    def create_pdf_in_memory(
+        self,
+    ) -> bytes:
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", "B", 16)
+        pdf.cell(40, 10, "Hello World!")
+
+        # Save the PDF to a bytes buffer
+        pdf_output: BytesIO = io.BytesIO()
+        pdf.output(pdf_output)
+        pdf_output.seek(0)  # Move to the beginning of the BytesIO buffer
+        return pdf_output.read()
+
+    def print_pdf_from_memory(self, pdf_data: bytes):
+        """Prints PDF data directly to the default printer without saving it to a file.
+        Example usage:
+        pdf_data = create_pdf_in_memory()  # Assuming you have a function to create PDF data
+        print_pdf_from_memory(pdf_data)
+
+        """
+
+        PHYSICALWIDTH = 110
+        PHYSICALHEIGHT = 111
+        # self.pdf_document: fitz.Document = fitz.open(BytesIO(pdf_data))
+        # self.pdf_document: fitz.Document = fitz.open("pdf", BytesIO(pdf_data))
+        self.pdf_document: fitz.Document = fitz.open("pdf", pdf_data)
+        # self.pdf_document: fitz.Document = BytesIO(pdf_data)
+        page: fitz.Page = self.pdf_document[0]  # Retrieve the current page
+
+        pix: fitz.Pixmap = page.get_pixmap()  # Convert the page to a pixmap
+        # Create a temporary image from the PDF data
+        # img = Image.open(BytesIO(pdf_data))
+        bytes_out: BytesIO = pix.tobytes()
+        # img:PIL_img.Image = PIL_img.open(img)
+        img: PIL_img.Image = PIL_img.open(BytesIO(bytes_out))
+
+        # img.size = (pix.width, pix.height)
+        self.print_pil_image(image=img)
+        # # img = Image.open(img)
+        # # Get the default printer
+        # printer_name = win32print.GetDefaultPrinter()
+
+        # # Create a device context (DC) for the printer
+        # hDC = win32ui.CreateDC()
+        # hDC.CreatePrinterDC(printer_name)
+
+        # # Get the printer's physical size
+        # printer_size = hDC.GetDeviceCaps(PHYSICALWIDTH), hDC.GetDeviceCaps(
+        #     PHYSICALHEIGHT
+        # )
+
+        # # Start the printing process
+        # hDC.StartDoc(printer_name)
+        # hDC.StartPage()
+
+        # # Create a DIB (Device Independent Bitmap) from the image
+        # dib = win32ui.CreateBitmap()
+        # dib.CreateBitmap(img.size[0], img.size[1], 1, 1, img.tobytes())
+
+        # # Draw the image on the printer DC
+        # dib.draw(hDC.GetHandleOutput(), (0, 0, printer_size[0], printer_size[1]))
+
+        # # End the printing process
+        # hDC.EndPage()
+        # hDC.EndDoc()
+        # hDC.DeleteDC()
+
+    def print_pdf_from_memory_not_working_2(self, pdf_data: bytes):
+        # Get the default printer
+        printer_name = win32print.GetDefaultPrinter()
+
+        # Create a temporary file to hold the PDF data
+        with open("temp.pdf", "wb") as temp_pdf:
+            temp_pdf.write(pdf_data)
+
+        # Use win32api to print the PDF
+        try:
+            win32api.ShellExecute(
+                0, "print", "temp.pdf", f'/d:"{printer_name}"', ".", 0
+            )
+            print(f"Printing: temp.pdf on {printer_name}")
+        except Exception as e:
+            print(f"Error: {e}")
+            print(
+                "The error could be caused by not having a PDF reader installed on Windows."
+            )
+
+
+def test_print_pdf():
+
+    my_folder_path: str = os.path.dirname(__file__)
+    # testing pdf-------------------------------------------
+    test_pdf_file_name: str = "test_image_fit_in_rect_with_c_align_center_and_print.pdf"
+    output_folder_name: str = "outputs"
+    pdf_filepath: str = os.path.join(
+        my_folder_path,
+        output_folder_name,
+        test_pdf_file_name,
+    )
+    printer = ImagePrinter(file_path=pdf_filepath)
+    printer.print_file(filepath=pdf_filepath)
+
+
+def test_print_image():
+    my_folder_path: str = os.path.dirname(__file__)
+
+    # testing image--------------------------------------
+    test_images_folder_name: str = "test_images"
+    test_img_name: str = "teset.png"
+    image_filepath: str = os.path.join(
+        my_folder_path,
+        test_images_folder_name,
+        test_img_name,
+    )
+    printer = ImagePrinter(file_path=image_filepath)
+    printer.print_pil_image()
+
+
+def test_print_from_memory():
+    printer = ImagePrinter()
+    pdf_as_bytes: bytes = printer.create_pdf_in_memory()
+    printer.print_pdf_from_memory(pdf_data=pdf_as_bytes)
+
 
 if __name__ == "__main__":
-    # Example usage:
-    image_filepath: str = r"D:\11\02\13\FPDF_tests\test_images\teset.png"
-    filepath: str = (
-        r"D:\11\02\13\FPDF_tests\test_image_fit_in_rect_with_c_align_center_and_print.pdf"
-    )
-
-    # printer = ImagePrinter(file_path=image_filepath)
-    # printer.print_image()
-
-    printer = ImagePrinter(file_path=filepath)
-    printer.print_file(filepath=filepath)
+    # test_print_image()
+    test_print_pdf()
+    test_print_from_memory()
 
     # printer.print_printers()
     # printer.print_printer_enums()
