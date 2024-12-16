@@ -17,7 +17,8 @@ def save_to_output_folder(
     pdf: FPDF,
     pdf_file_name: str,
 ):
-    current_directory = os.getcwd()
+    # current_directory = os.getcwd()
+    current_directory: str = os.path.dirname(__file__)
     pdf_file_name: str = pdf_file_name  # "draw_an_hourglass_shape.pdf"
     output_folder_name: str = "outputs"
     file_path: str = os.path.join(current_directory, output_folder_name, pdf_file_name)
@@ -49,7 +50,8 @@ pdf.image(
     w=pdf.epw / 2,
     x=pdf.epw / 2,
 )  # full page height, half page width, right half of the page
-current_directory = os.getcwd()
+# current_directory = os.getcwd()
+current_directory: str = os.path.dirname(__file__)
 pdf_file_name: str = "Side_by_side_images.pdf"
 save_to_output_folder(
     pdf=pdf,

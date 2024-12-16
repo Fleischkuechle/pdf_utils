@@ -9,7 +9,8 @@ class PDF(FPDF):
         pdf: FPDF,
         pdf_file_name: str,
     ):
-        current_directory = os.getcwd()
+        # current_directory = os.getcwd()
+        current_directory: str = os.path.dirname(__file__)
         pdf_file_name: str = pdf_file_name  # "draw_an_hourglass_shape.pdf"
         output_folder_name: str = "outputs"
         file_path: str = os.path.join(

@@ -22,7 +22,9 @@ class Draw_Wallet:
         self.l_r_margin: float = l_r_margin
         self.top_margin: float = top_margin
         self.grid_line_distance: int = 5
-        self.current_directory = os.getcwd()
+        # self.current_directory:str = os.getcwd()
+
+        self.current_directory: str = os.path.dirname(__file__)
         self.doge_logo_file_name: str = "dogecoin.png"  # "draw_an_hourglass_shape.pdf"
         self.logos_folder_name: str = "logos"
         self.doge_logo_path: str = os.path.join(
@@ -127,7 +129,8 @@ class Draw_Wallet:
         pdf: FPDF,
         pdf_file_name: str,
     ) -> str:
-        current_directory = os.getcwd()
+        # current_directory = os.getcwd()
+        current_directory: str = os.path.dirname(__file__)
         pdf_file_name: str = pdf_file_name  # "draw_an_hourglass_shape.pdf"
         output_folder_name: str = "outputs"
         file_path: str = os.path.join(
@@ -721,7 +724,8 @@ class Draw_Wallet:
     def get_test_images_folder_path(
         self,
     ) -> str:
-        current_directory: str = os.getcwd()
+        # current_directory: str = os.getcwd()
+        current_directory: str = os.path.dirname(__file__)
         images_folder_name: str = "test_images"
         images_folder_path: str = os.path.join(
             current_directory,
@@ -774,6 +778,7 @@ def test_draw_wallet() -> str:
 
 
 def test_draw_wallet_2() -> bytes:
+
     # init class
     l_r_margin: float = 5
     top_margin: float = 5
@@ -825,3 +830,5 @@ if __name__ == "__main__":
     pdf_data: bytes = test_draw_wallet_2()
     image_printer: ImagePrinter = ImagePrinter()
     image_printer.print_pdf_from_memory(pdf_data=pdf_data)
+    print(" ")
+    print("test completed..")

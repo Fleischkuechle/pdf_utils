@@ -215,8 +215,7 @@ class ImagePrinter:
         hDC.EndDoc()
         hDC.DeleteDC()
 
-    # win32ui.CreatePrintDialog
-    def print_pil_image(
+    def print_pil_image_original(
         self,
         image: PIL_img.Image,
     ) -> None:
@@ -259,6 +258,42 @@ class ImagePrinter:
             (-5, 0, int(printer_size[0] * 0.96), printer_size[1]),
         )
         # dib.draw(hDC.GetHandleOutput(), (0, 0, image.size[0], image.size[1]))
+
+        hDC.EndPage()
+        hDC.EndDoc()
+        hDC.DeleteDC()
+
+    def print_pil_image(
+        self,
+        image: PIL_img.Image,
+        document_name: str = "print_pil_image",
+    ) -> None:
+        """
+        Prints the image to the specified printer.
+
+        Args:
+            image (PIL_img.Image): The PIL Image object to print.
+            document_name (str, optional): The name of the document to print.
+                Defaults to 'Printed Image'.
+        """
+        hDC = win32ui.CreateDC()
+        hDC.CreatePrinterDC(self.printer_name)
+
+        PHYSICALWIDTH = 110
+        PHYSICALHEIGHT = 111
+
+        printer_size = hDC.GetDeviceCaps(PHYSICALWIDTH), hDC.GetDeviceCaps(
+            PHYSICALHEIGHT
+        )
+
+        hDC.StartDoc(document_name)  # Set the document name
+        hDC.StartPage()
+
+        dib = ImageWin.Dib(image=image)
+        dib.draw(
+            hDC.GetHandleOutput(),
+            (-5, 0, int(printer_size[0] * 0.96), printer_size[1]),
+        )
 
         hDC.EndPage()
         hDC.EndDoc()
@@ -399,14 +434,18 @@ class ImagePrinter:
         pdf_output.seek(0)  # Move to the beginning of the BytesIO buffer
         return pdf_output.read()
 
-    def print_pdf_from_memory(self, pdf_data: bytes):
+    def print_pdf_from_memory(
+        self,
+        pdf_data: bytes,
+        document_name: str = "print_from_bytes",
+    ):
         """Prints PDF data directly to the default printer without saving it to a file.
         Example usage:
         pdf_data = create_pdf_in_memory()  # Assuming you have a function to create PDF data
         print_pdf_from_memory(pdf_data)
 
         """
-
+        # document_name: str = "test_print"
         PHYSICALWIDTH = 110
         PHYSICALHEIGHT = 111
         # self.pdf_document: fitz.Document = fitz.open(BytesIO(pdf_data))
@@ -419,39 +458,9 @@ class ImagePrinter:
         # Create a temporary image from the PDF data
         # img = Image.open(BytesIO(pdf_data))
         bytes_out: BytesIO = pix.tobytes()
-        # img:PIL_img.Image = PIL_img.open(img)
         img: PIL_img.Image = PIL_img.open(BytesIO(bytes_out))
 
-        # img.size = (pix.width, pix.height)
-        self.print_pil_image(image=img)
-        # # img = Image.open(img)
-        # # Get the default printer
-        # printer_name = win32print.GetDefaultPrinter()
-
-        # # Create a device context (DC) for the printer
-        # hDC = win32ui.CreateDC()
-        # hDC.CreatePrinterDC(printer_name)
-
-        # # Get the printer's physical size
-        # printer_size = hDC.GetDeviceCaps(PHYSICALWIDTH), hDC.GetDeviceCaps(
-        #     PHYSICALHEIGHT
-        # )
-
-        # # Start the printing process
-        # hDC.StartDoc(printer_name)
-        # hDC.StartPage()
-
-        # # Create a DIB (Device Independent Bitmap) from the image
-        # dib = win32ui.CreateBitmap()
-        # dib.CreateBitmap(img.size[0], img.size[1], 1, 1, img.tobytes())
-
-        # # Draw the image on the printer DC
-        # dib.draw(hDC.GetHandleOutput(), (0, 0, printer_size[0], printer_size[1]))
-
-        # # End the printing process
-        # hDC.EndPage()
-        # hDC.EndDoc()
-        # hDC.DeleteDC()
+        self.print_pil_image(image=img, document_name=document_name)
 
     def print_pdf_from_memory_not_working_2(self, pdf_data: bytes):
         # Get the default printer
