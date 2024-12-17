@@ -7,8 +7,6 @@ import fpdf
 import fpdf.output
 from .Grid_Generator import Grid_Generator
 from .Add_Image import Add_Image
-from .PDFPrinter import PDFPrinter
-from .ImagePrinter import ImagePrinter
 
 from PIL import Image as pil_img
 
@@ -90,6 +88,7 @@ class Draw_Wallet:
         self.text_size_1: int = 15
         self.font_size_1: int = 15
         self.text_size_2: int = 10
+        self.text_size_3: int = 13
         self.x_offset: int = 0
 
         self.img_width: int = 50
@@ -706,9 +705,28 @@ class Draw_Wallet:
         privkey: str,
         privkey_qr_img: pil_img.Image,
     ) -> bytes:
-
         # cerate a empty pdf
         pdf: FPDF = self.create_pdf()
+        self.draw_wallet_main(
+            pdf=pdf,
+            pub_address=pub_address,
+            pub_address_qr_img=pub_address_qr_img,
+            privkey=privkey,
+            privkey_qr_img=privkey_qr_img,
+        )
+
+        pdf_as_bytes: bytes = pdf.output()
+        return pdf_as_bytes
+
+    def draw_wallet_main(
+        self,
+        pdf: FPDF,
+        pub_address: str,
+        pub_address_qr_img: pil_img.Image,
+        privkey: str,
+        privkey_qr_img: pil_img.Image,
+    ) -> FPDF:
+
         self.grid_generator.draw_grid_03(
             pdf=pdf,
             line_distance=self.grid_line_distance,
@@ -763,6 +781,7 @@ class Draw_Wallet:
             text=text_1,
             angle=text_angle,
             text_size=self.text_size_1,
+            # text_size=self.text_size_3,
         )
 
         pdf.set_fill_color(0, 255, 0)  # green
@@ -778,6 +797,7 @@ class Draw_Wallet:
             text=text_2,
             angle=text_angle,
             text_size=self.text_size_1,
+            # text_size=self.text_size_3,
         )
 
         # priv_key
@@ -793,9 +813,10 @@ class Draw_Wallet:
             text=text_2,
             x=text_2_2_x,
             y=text_2_2_y,
-            text_size=self.text_size_1,
+            # text_size=self.text_size_1,
+            text_size=self.text_size_3,
         )
-
+        # adding public address
         pdf.set_fill_color(255, 255, 255)  # white
         text_2_3_y: float = text_2_2_y + pdf.font_size
         self.add_horizontal_text_to_pos_L(
@@ -803,19 +824,23 @@ class Draw_Wallet:
             text=pub_address,
             x=text_2_2_x,
             y=text_2_3_y,
-            text_size=self.text_size_1,
+            # text_size=self.text_size_1,
+            text_size=self.text_size_3,
         )
         text_1_2_y: float = (
             text_2_2_y + self.font_size_1 + self.font_size_1 + self.font_size_1
         )
+        # adding private label
         pdf.set_fill_color(255, 0, 0)  # red
         self.add_horizontal_text_to_pos_C_fill(
             pdf=pdf,
             text=text_1,
             x=text_2_2_x,
             y=text_1_2_y,
-            text_size=self.text_size_1,
+            # text_size=self.text_size_1,
+            text_size=self.text_size_3,
         )
+        # adding private key
         pdf.set_fill_color(255, 255, 255)  # white
         text_1_3_y: float = text_1_2_y + pdf.font_size
         self.add_horizontal_text_to_pos_L(
@@ -823,7 +848,8 @@ class Draw_Wallet:
             text=privkey,
             x=text_2_2_x,
             y=text_1_3_y,
-            text_size=self.text_size_1,
+            # text_size=self.text_size_1,
+            text_size=self.text_size_3,
         )
 
         sqare_x: float = self.column_1_border + 2
@@ -862,17 +888,6 @@ class Draw_Wallet:
             x=logo_x,
             y=logo_y,
         )
-        # # #logo column 1 row 1
-        # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
-        # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        # self.image_adder.add_image_to_pos(
-        #     pdf=pdf,
-        #     img_path=self.doge_logo_path,
-        #     width=self.logo_width_2,
-        #     height=self.logo_height_2,
-        #     x=logo_x,
-        #     y=logo_y,
-        # )
         # logo column 3 row 1
         logo_x = self.column_3_mid - (self.logo_width_2 / 2)
         logo_y = self.row_1_mid - (self.logo_height_2 / 2)
@@ -884,13 +899,7 @@ class Draw_Wallet:
             x=logo_x,
             y=logo_y,
         )
-        # Save the PDF to a bytes buffer
-        # pdf_output: io.BytesIO = io.BytesIO()
-        # pdf.output(pdf_output)
-        pdf_as_bytes: bytes = pdf.output()
-        # pdf_output.seek(0)  # Move to the beginning of the BytesIO buffer
-        # pdf_as_bytes: bytes = pdf_output.read()
-        return pdf_as_bytes  # pdf_output.read()
+        return pdf
 
     def create_pdf(
         self,
@@ -1019,10 +1028,13 @@ def test_draw_wallet_2() -> bytes:
 if __name__ == "__main__":
 
     # file_path: str = test_draw_wallet()
+    # from .PDFPrinter import PDFPrinter
     # printer: PDFPrinter = PDFPrinter()
     # printer.print_pdf(pdf_path=file_path)
 
     pdf_data: bytes = test_draw_wallet_2()
+    from .ImagePrinter import ImagePrinter
+
     image_printer: ImagePrinter = ImagePrinter()
     image_printer.print_pdf_from_memory(pdf_data=pdf_data)
     print(" ")
