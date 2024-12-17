@@ -135,6 +135,19 @@ class PDF_Helper:
             # self.pages_count: int = len(self.pdf_document)
         return self.pdf_document
 
+    def open_pdf_from_bytes(
+        self,
+        pdf_bytes: bytes,
+    ) -> fitz.Document:
+        # self.pdf_document: fitz.Document = fitz.open(pdf_path)
+        # Open the PDF document from bytes
+        self.pdf_document: fitz.Document = fitz.open(stream=pdf_bytes, filetype="pdf")
+
+        if self.pdf_document != None:
+            self.update_pdf()
+            # self.pages_count: int = len(self.pdf_document)
+        return self.pdf_document
+
 
 def test():
     pdf_helper: PDF_Helper = PDF_Helper()

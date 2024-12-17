@@ -5,10 +5,12 @@ from fpdf import FPDF
 from fpdf.output import PDFPage
 import fpdf
 import fpdf.output
-from Grid_Generator import Grid_Generator
-from Add_Image import Add_Image
-from PDFPrinter import PDFPrinter
-from ImagePrinter import ImagePrinter
+from .Grid_Generator import Grid_Generator
+from .Add_Image import Add_Image
+from .PDFPrinter import PDFPrinter
+from .ImagePrinter import ImagePrinter
+
+from PIL import Image as pil_img
 
 
 class Draw_Wallet:
@@ -626,6 +628,199 @@ class Draw_Wallet:
         self.add_horizontal_text_to_pos_L(
             pdf=pdf,
             text=priv_key,
+            x=text_2_2_x,
+            y=text_1_3_y,
+            text_size=self.text_size_1,
+        )
+
+        sqare_x: float = self.column_1_border + 2
+        sqare_y: float = self.top_margin + self.half_height + 2
+        sqare_w: float = self.column_width - 4
+        sqare_h: float = self.row_height - 4
+        self.add_white_sqare_to_pos(
+            pdf=pdf,
+            x=sqare_x,
+            y=sqare_y,
+            w=sqare_w,
+            h=sqare_h,
+        )
+        date_x: int = self.column_1_border  # + (self.text_size_2 / 3)
+        date_y: int = self.top_margin + self.half_height + 2  # + (self.text_size_2 / 4)
+        # Get the current date and time
+        now = datetime.datetime.now()
+
+        # Format the date and time as a string
+        date_time_string = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        self.add_horizontal_text_to_pos_C(
+            pdf=pdf,
+            text=date_time_string,
+            x=date_x,
+            y=date_y,
+            text_size=self.text_size_2,
+        )
+        logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
+        logo_y = self.row_2_mid - (self.logo_height_2 / 2)
+        self.image_adder.add_image_to_pos(
+            pdf=pdf,
+            img_path=self.doge_logo_path,
+            width=self.logo_width_2,
+            height=self.logo_height_2,
+            x=logo_x,
+            y=logo_y,
+        )
+        # # #logo column 1 row 1
+        # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
+        # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
+        # self.image_adder.add_image_to_pos(
+        #     pdf=pdf,
+        #     img_path=self.doge_logo_path,
+        #     width=self.logo_width_2,
+        #     height=self.logo_height_2,
+        #     x=logo_x,
+        #     y=logo_y,
+        # )
+        # logo column 3 row 1
+        logo_x = self.column_3_mid - (self.logo_width_2 / 2)
+        logo_y = self.row_1_mid - (self.logo_height_2 / 2)
+        self.image_adder.add_image_to_pos(
+            pdf=pdf,
+            img_path=self.doge_logo_path,
+            width=self.logo_width_2,
+            height=self.logo_height_2,
+            x=logo_x,
+            y=logo_y,
+        )
+        # Save the PDF to a bytes buffer
+        # pdf_output: io.BytesIO = io.BytesIO()
+        # pdf.output(pdf_output)
+        pdf_as_bytes: bytes = pdf.output()
+        # pdf_output.seek(0)  # Move to the beginning of the BytesIO buffer
+        # pdf_as_bytes: bytes = pdf_output.read()
+        return pdf_as_bytes  # pdf_output.read()
+
+    def draw_wallet_return_bytes_2(
+        self,
+        pub_address: str,
+        pub_address_qr_img: pil_img.Image,
+        privkey: str,
+        privkey_qr_img: pil_img.Image,
+    ) -> bytes:
+
+        # cerate a empty pdf
+        pdf: FPDF = self.create_pdf()
+        self.grid_generator.draw_grid_03(
+            pdf=pdf,
+            line_distance=self.grid_line_distance,
+            height=self.grid_height,
+            width=self.grid_width,
+        )
+        self.draw_vert_fold_lines(pdf=pdf)
+        # public qr code to column3  and row 2
+        pub_qr_x: int = self.column_3_mid - (self.img_width / 2) - self.x_offset
+        pub_qr_y: int = self.row_2_mid - self.img_height / 2
+        self.image_adder.add_image_to_pos_from_pil_img(
+            pdf=pdf,
+            pil_img=pub_address_qr_img,
+            width=self.img_width,
+            height=self.img_height,
+            x=pub_qr_x,
+            y=pub_qr_y,
+        )
+        # private qr code to column 2(middle) row 1
+        priv_qr_x: int = self.column_2_mid - (self.img_width / 2) - self.x_offset
+        priv_qr_y: int = self.row_1_mid - self.img_height / 2
+        self.image_adder.add_image_to_pos_from_pil_img(
+            pdf=pdf,
+            pil_img=privkey_qr_img,
+            width=self.img_width,
+            height=self.img_height,
+            x=priv_qr_x,
+            y=priv_qr_y,
+        )
+        # add logo to column 1 row 2
+        logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
+        logo_y: int = self.row_2_mid - self.logo_height_1 / 2
+        self.image_adder.add_image_to_pos(
+            pdf=pdf,
+            img_path=self.doge_logo_path_2,
+            width=self.logo_width_1,
+            height=self.logo_height_1,
+            x=logo_x,
+            y=logo_y,
+        )
+
+        pdf.set_fill_color(255, 0, 0)  # red
+        text_1: str = "Private"
+        # text_size: int = 25
+        text_angle: float = 90
+        pdf.set_xy(
+            x=priv_qr_x - (self.text_size_1 / 3),
+            y=priv_qr_y + self.img_height,
+        )
+        self.add_vertical_text_to_pos_2(
+            pdf=pdf,
+            text=text_1,
+            angle=text_angle,
+            text_size=self.text_size_1,
+        )
+
+        pdf.set_fill_color(0, 255, 0)  # green
+        text_2: str = "Public"
+        text_2_x: float = pub_qr_x - (self.text_size_1 / 3)
+        text_2_y: float = pub_qr_y + self.img_height
+        pdf.set_xy(
+            x=text_2_x,
+            y=text_2_y,
+        )
+        self.add_vertical_text_to_pos_2(
+            pdf=pdf,
+            text=text_2,
+            angle=text_angle,
+            text_size=self.text_size_1,
+        )
+
+        # priv_key
+        pdf.set_xy(
+            x=priv_qr_x + self.img_width - self.x_offset / 2,  # (self.text_size_1 / 3)
+            y=priv_qr_y + self.img_height,
+        )
+        # column 1 row 1
+        text_2_2_x: float = self.column_1_mid - (self.img_width / 2) - self.x_offset
+        text_2_2_y: float = priv_qr_y + pdf.font_size
+        self.add_horizontal_text_to_pos_C_fill(
+            pdf=pdf,
+            text=text_2,
+            x=text_2_2_x,
+            y=text_2_2_y,
+            text_size=self.text_size_1,
+        )
+
+        pdf.set_fill_color(255, 255, 255)  # white
+        text_2_3_y: float = text_2_2_y + pdf.font_size
+        self.add_horizontal_text_to_pos_L(
+            pdf=pdf,
+            text=pub_address,
+            x=text_2_2_x,
+            y=text_2_3_y,
+            text_size=self.text_size_1,
+        )
+        text_1_2_y: float = (
+            text_2_2_y + self.font_size_1 + self.font_size_1 + self.font_size_1
+        )
+        pdf.set_fill_color(255, 0, 0)  # red
+        self.add_horizontal_text_to_pos_C_fill(
+            pdf=pdf,
+            text=text_1,
+            x=text_2_2_x,
+            y=text_1_2_y,
+            text_size=self.text_size_1,
+        )
+        pdf.set_fill_color(255, 255, 255)  # white
+        text_1_3_y: float = text_1_2_y + pdf.font_size
+        self.add_horizontal_text_to_pos_L(
+            pdf=pdf,
+            text=privkey,
             x=text_2_2_x,
             y=text_1_3_y,
             text_size=self.text_size_1,

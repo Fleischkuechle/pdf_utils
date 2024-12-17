@@ -1,6 +1,7 @@
 import os
 from fpdf import FPDF
 import fpdf
+from PIL import Image as pil_img
 
 
 class Add_Image:
@@ -79,6 +80,27 @@ class Add_Image:
         self.height = height
         pdf.image(
             name=img_path,
+            w=width,
+            h=height,
+            x=x,
+            y=y,
+            keep_aspect_ratio=True,
+        )
+
+    def add_image_to_pos_from_pil_img(
+        self,
+        pdf: FPDF,
+        pil_img: pil_img.Image,
+        width: int = 300,
+        height: int = 300,
+        x: int = 0,
+        y: int = 0,
+    ):
+
+        self.width = width
+        self.height = height
+        pdf.image(
+            name=pil_img,
             w=width,
             h=height,
             x=x,
