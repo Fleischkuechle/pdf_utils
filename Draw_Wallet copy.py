@@ -3,11 +3,10 @@ import os
 from fpdf import FPDF
 import fpdf
 import fpdf.output
-from PIL import Image as pil_img
-
-# from .Grid_Generator import Grid_Generator
+from .Grid_Generator import Grid_Generator
 from .Add_Image import Add_Image
 
+from PIL import Image as pil_img
 from .Draw_Helper import Draw_Helper
 
 
@@ -109,10 +108,10 @@ class Draw_Wallet:
 
         self.img_width: int = 50
         self.img_height: int = self.img_width
-        # self.grid_generator: Grid_Generator = Grid_Generator(
-        #     l_r_margin=self.l_r_margin,
-        #     top_margin=self.top_margin,
-        # )
+        self.grid_generator: Grid_Generator = Grid_Generator(
+            l_r_margin=self.l_r_margin,
+            top_margin=self.top_margin,
+        )
         self.image_adder: Add_Image = Add_Image()
         self.draw_helper: Draw_Helper = Draw_Helper(
             l_r_margin=l_r_margin,
@@ -370,7 +369,7 @@ class Draw_Wallet:
         pub_qr_img_path: str = "",
     ):
 
-        self.draw_helper.draw_grid(
+        self.grid_generator.draw_grid_03(
             pdf=pdf,
             line_distance=self.grid_line_distance,
             height=self.grid_height,
@@ -380,7 +379,7 @@ class Draw_Wallet:
         # public qr code to column3  and row 2
         pub_qr_x: int = self.column_3_mid - (self.img_width / 2) - self.x_offset
         pub_qr_y: int = self.row_2_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=pub_qr_img_path,
             width=self.img_width,
@@ -391,7 +390,7 @@ class Draw_Wallet:
         # private qr code to column 2(middle) row 1
         priv_qr_x: int = self.column_2_mid - (self.img_width / 2) - self.x_offset
         priv_qr_y: int = self.row_1_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=priv_qr_img_path,
             width=self.img_width,
@@ -402,7 +401,7 @@ class Draw_Wallet:
         # add logo to column 1 row 2
         logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
         logo_y: int = self.row_2_mid - self.logo_height_1 / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path_2,
             width=self.logo_width_1,
@@ -515,7 +514,7 @@ class Draw_Wallet:
         )
         logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
         logo_y = self.row_2_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path,
             width=self.logo_width_2,
@@ -526,7 +525,7 @@ class Draw_Wallet:
         # # #logo column 1 row 1
         # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
         # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        # self.draw_helper.add_image_to_pos(
+        # self.image_adder.add_image_to_pos(
         #     pdf=pdf,
         #     img_path=self.doge_logo_path,
         #     width=self.logo_width_2,
@@ -537,7 +536,7 @@ class Draw_Wallet:
         # logo column 3 row 1
         logo_x = self.column_3_mid - (self.logo_width_2 / 2)
         logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path,
             width=self.logo_width_2,
@@ -557,7 +556,7 @@ class Draw_Wallet:
 
         # cerate a empty pdf
         pdf: FPDF = self.create_pdf()
-        self.draw_helper.draw_grid(
+        self.grid_generator.draw_grid_03(
             pdf=pdf,
             line_distance=self.grid_line_distance,
             height=self.grid_height,
@@ -567,7 +566,7 @@ class Draw_Wallet:
         # public qr code to column3  and row 2
         pub_qr_x: int = self.column_3_mid - (self.img_width / 2) - self.x_offset
         pub_qr_y: int = self.row_2_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=pub_qr_img_path,
             width=self.img_width,
@@ -578,7 +577,7 @@ class Draw_Wallet:
         # private qr code to column 2(middle) row 1
         priv_qr_x: int = self.column_2_mid - (self.img_width / 2) - self.x_offset
         priv_qr_y: int = self.row_1_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=priv_qr_img_path,
             width=self.img_width,
@@ -589,7 +588,7 @@ class Draw_Wallet:
         # add logo to column 1 row 2
         logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
         logo_y: int = self.row_2_mid - self.logo_height_1 / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path_2,
             width=self.logo_width_1,
@@ -702,7 +701,7 @@ class Draw_Wallet:
         )
         logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
         logo_y = self.row_2_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path,
             width=self.logo_width_2,
@@ -713,7 +712,7 @@ class Draw_Wallet:
         # # #logo column 1 row 1
         # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
         # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        # self.draw_helper.add_image_to_pos(
+        # self.image_adder.add_image_to_pos(
         #     pdf=pdf,
         #     img_path=self.doge_logo_path,
         #     width=self.logo_width_2,
@@ -724,7 +723,7 @@ class Draw_Wallet:
         # logo column 3 row 1
         logo_x = self.column_3_mid - (self.logo_width_2 / 2)
         logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path,
             width=self.logo_width_2,
@@ -769,7 +768,7 @@ class Draw_Wallet:
         privkey_qr_img: pil_img.Image,
     ) -> FPDF:
 
-        self.draw_helper.draw_grid(
+        self.grid_generator.draw_grid_03(
             pdf=pdf,
             line_distance=self.grid_line_distance,
             height=self.grid_height,
@@ -779,7 +778,7 @@ class Draw_Wallet:
         # public qr code to column3  and row 2
         pub_qr_x: int = self.column_3_mid - (self.img_width / 2) - self.x_offset
         pub_qr_y: int = self.row_2_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos_from_pil_img(
+        self.image_adder.add_image_to_pos_from_pil_img(
             pdf=pdf,
             pil_img=pub_address_qr_img,
             width=self.img_width,
@@ -790,7 +789,7 @@ class Draw_Wallet:
         # private qr code to column 2(middle) row 1
         priv_qr_x: int = self.column_2_mid - (self.img_width / 2) - self.x_offset
         priv_qr_y: int = self.row_1_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos_from_pil_img(
+        self.image_adder.add_image_to_pos_from_pil_img(
             pdf=pdf,
             pil_img=privkey_qr_img,
             width=self.img_width,
@@ -801,7 +800,7 @@ class Draw_Wallet:
         # add logo to column 1 row 2
         logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
         logo_y: int = self.row_2_mid - self.logo_height_1 / 2
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path_2,
             width=self.logo_width_1,
@@ -922,7 +921,7 @@ class Draw_Wallet:
         )
         logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
         logo_y = self.row_2_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path,
             width=self.logo_width_2,
@@ -933,7 +932,7 @@ class Draw_Wallet:
         # logo column 3 row 1
         logo_x = self.column_3_mid - (self.logo_width_2 / 2)
         logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.doge_logo_path,
             width=self.logo_width_2,
@@ -951,7 +950,7 @@ class Draw_Wallet:
             + self.donate_y_offset
             + 10
         )
-        self.draw_helper.add_image_to_pos(
+        self.image_adder.add_image_to_pos(
             pdf=pdf,
             img_path=self.donate_Doge_qr_image_path,
             width=self.donate_img_width,
