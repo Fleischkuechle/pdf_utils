@@ -39,6 +39,21 @@ class Draw_Wallet:
             self.logos_folder_name,
             self.doge_logo_file_name_2,
         )
+        self.donate_folder_name: str = "donate"
+        self.donate_Doge_qr_image_name: str = "D68GeLDEN2WiBZU7WtW8QtvWkS1ApEnTeN.png"
+        self.donate_Doge_address: str = "D68GeLDEN2WiBZU7WtW8QtvWkS1ApEnTeN"
+
+        self.donate_text: str = (
+            "Donations are welcome this is the developers doge coin address."
+        )
+        self.donate_img_width: int = 80
+        self.donate_img_height: int = self.donate_img_width
+        self.donate_y_offset: float = self.donate_img_height / 2 + 20
+        self.donate_Doge_qr_image_path: str = os.path.join(
+            self.current_directory,
+            self.donate_folder_name,
+            self.donate_Doge_qr_image_name,
+        )
         self.logo_width_1: int = 50
         self.logo_height_1: int = self.logo_width_1
         self.logo_width_2: int = 10
@@ -89,6 +104,7 @@ class Draw_Wallet:
         self.font_size_1: int = 15
         self.text_size_2: int = 10
         self.text_size_3: int = 13
+        self.text_size_4: int = 20
         self.x_offset: int = 0
 
         self.img_width: int = 50
@@ -252,6 +268,28 @@ class Draw_Wallet:
         pdf.multi_cell(
             text=text,
             w=self.column_width,
+            # fill=True,
+            align=fpdf.enums.Align.C,
+        )
+
+    def add_horizontal_text_to_pos_C_width(
+        self,
+        pdf: FPDF,
+        text: str = "please enter text.",
+        x: int = 0,
+        y: int = 0,
+        text_size: int = 50,
+        text_witdth: float = 100,
+    ):
+        pdf.set_auto_page_break(False)
+        pdf.set_font("Helvetica", size=text_size)
+        pdf.set_xy(
+            x=x,
+            y=y,
+        )
+        pdf.multi_cell(
+            text=text,
+            w=text_witdth,
             # fill=True,
             align=fpdf.enums.Align.C,
         )
@@ -899,6 +937,64 @@ class Draw_Wallet:
             x=logo_x,
             y=logo_y,
         )
+
+        # donate image
+        donate_qr_image_x = self.column_2_mid - (self.donate_img_width / 2)
+        donate_qr_image_y = (
+            self.row_height
+            + self.row_height
+            - (self.donate_img_height / 2)
+            + self.donate_y_offset
+            + 10
+        )
+        self.image_adder.add_image_to_pos(
+            pdf=pdf,
+            img_path=self.donate_Doge_qr_image_path,
+            width=self.donate_img_width,
+            height=self.donate_img_height,
+            x=donate_qr_image_x,
+            y=donate_qr_image_y,
+        )
+        # donate text
+        donate_text_x = self.l_r_margin
+        donate_text_y = (
+            self.row_height
+            + self.row_height
+            - (self.donate_img_height / 2)
+            + self.donate_y_offset
+        )
+        donate_text_width: float = self.column_width * self.columns_count
+        self.add_horizontal_text_to_pos_C_width(
+            pdf=pdf,
+            text=self.donate_text,
+            x=donate_text_x,
+            y=donate_text_y,
+            text_size=self.text_size_4,
+            text_witdth=donate_text_width,
+        )
+
+        # donate address
+        donate_address_x = self.l_r_margin
+        donate_address_y = (
+            self.row_height
+            + self.row_height
+            - (self.donate_img_height / 2)
+            + self.donate_y_offset
+            + self.donate_img_height
+            + 10
+        )
+        donate_text_width: float = self.column_width * self.columns_count
+        self.add_horizontal_text_to_pos_C_width(
+            pdf=pdf,
+            text=self.donate_Doge_address,
+            x=donate_address_x,
+            y=donate_address_y,
+            text_size=self.text_size_4,
+            text_witdth=donate_text_width,
+        )
+        # self.donate_img_width: int = 80
+        # self.donate_img_height: int = self.donate_img_width
+
         return pdf
 
     def create_pdf(
