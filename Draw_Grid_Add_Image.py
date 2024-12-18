@@ -1,7 +1,6 @@
 import os
 from fpdf import FPDF
-from Draw_Grid_2 import Draw_Grid_2
-from Add_Image import Add_Image
+from Draw_Helper import Draw_Helper
 
 
 class Draw_Grid_Add_Image:
@@ -9,16 +8,8 @@ class Draw_Grid_Add_Image:
     # A4 Metric: 210 x 297 mm
     def __init__(
         self,
-        # line_distance: int = 5,
-        # grid_height: int = 125,
-        # grid_width: int = 209,
     ):
-        # self.line_distance = line_distance
-        # self.grid_height = grid_height
-        # self.grid_width = grid_width
-        # self.half_height: int = self.grid_height / 2
-        self.grid_drawer: Draw_Grid_2 = Draw_Grid_2()
-        self.image_adder: Add_Image = Add_Image()
+        self.draw_helper: Draw_Helper = Draw_Helper()
 
     def save_to_output_folder(
         self,
@@ -57,13 +48,13 @@ class Draw_Grid_Add_Image:
         orientation: str = "center",
     ):
 
-        self.grid_drawer.draw_grid_01(
+        self.draw_helper.draw_grid(
             pdf=pdf,
             line_distance=grid_line_distance,
             height=grid_height,
             width=grid_width,
         )
-        self.image_adder.add_image(
+        self.draw_helper.add_image(
             pdf=pdf,
             img_path=img_path,
             width=img_width,
@@ -84,20 +75,12 @@ class Draw_Grid_Add_Image:
         # y: int = -1,
         # orientation: str = "center",
     ):
-        self.grid_drawer.draw_grid_01(
+        self.draw_helper.draw_grid(
             pdf=pdf,
             line_distance=grid_line_distance,
             height=grid_height,
             width=grid_width,
         )
-        # self.image_adder.add_image(
-        #     pdf=pdf,
-        #     img_path=img_path,
-        #     width=img_width,
-        #     height=img_height,
-        #     y=y,
-        #     orientation=orientation,
-        # )
 
     def add_image(
         self,
@@ -108,8 +91,7 @@ class Draw_Grid_Add_Image:
         y: int = -1,
         orientation: str = "center",
     ):
-
-        self.image_adder.add_image(
+        self.draw_helper.add_image(
             pdf=pdf,
             img_path=img_path,
             width=img_width,

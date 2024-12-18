@@ -4,8 +4,13 @@ import fpdf
 import fpdf.output
 from PIL import Image as pil_img
 
-from .Grid_Generator import Grid_Generator
-from .Add_Image import Add_Image
+
+try:
+    from Grid_Generator import Grid_Generator
+    from Add_Image import Add_Image
+except:
+    from .Grid_Generator import Grid_Generator
+    from .Add_Image import Add_Image
 
 
 class Draw_Helper:
@@ -73,6 +78,24 @@ class Draw_Helper:
             height=height,
             x=x,
             y=y,
+        )
+
+    def add_image(
+        self,
+        pdf: FPDF,
+        img_path: str = "",
+        width: int = 300,
+        height: int = 300,
+        y: int = -1,
+        orientation: str = "center",
+    ):
+        self.image_adder.add_image(
+            pdf=pdf,
+            img_path=img_path,
+            width=width,
+            height=height,
+            y=y,
+            orientation=orientation,
         )
 
     def save_to_output_folder(

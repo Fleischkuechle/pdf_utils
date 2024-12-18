@@ -5,9 +5,6 @@ import fpdf
 import fpdf.output
 from PIL import Image as pil_img
 
-# from .Grid_Generator import Grid_Generator
-from .Add_Image import Add_Image
-
 from .Draw_Helper import Draw_Helper
 
 
@@ -109,11 +106,7 @@ class Draw_Wallet:
 
         self.img_width: int = 50
         self.img_height: int = self.img_width
-        # self.grid_generator: Grid_Generator = Grid_Generator(
-        #     l_r_margin=self.l_r_margin,
-        #     top_margin=self.top_margin,
-        # )
-        self.image_adder: Add_Image = Add_Image()
+
         self.draw_helper: Draw_Helper = Draw_Helper(
             l_r_margin=l_r_margin,
             top_margin=top_margin,
