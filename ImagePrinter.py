@@ -486,7 +486,6 @@ class ImagePrinter:
 def test_print_pdf():
 
     my_folder_path: str = os.path.dirname(__file__)
-    # testing pdf-------------------------------------------
     test_pdf_file_name: str = "test_image_fit_in_rect_with_c_align_center_and_print.pdf"
     output_folder_name: str = "outputs"
     pdf_filepath: str = os.path.join(
