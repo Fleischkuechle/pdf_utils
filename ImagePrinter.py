@@ -445,22 +445,25 @@ class ImagePrinter:
         print_pdf_from_memory(pdf_data)
 
         """
-        # document_name: str = "test_print"
-        PHYSICALWIDTH = 110
-        PHYSICALHEIGHT = 111
-        # self.pdf_document: fitz.Document = fitz.open(BytesIO(pdf_data))
-        # self.pdf_document: fitz.Document = fitz.open("pdf", BytesIO(pdf_data))
-        self.pdf_document: fitz.Document = fitz.open("pdf", pdf_data)
-        # self.pdf_document: fitz.Document = BytesIO(pdf_data)
-        page: fitz.Page = self.pdf_document[0]  # Retrieve the current page
+        if pdf_data:
+            # document_name: str = "test_print"
+            PHYSICALWIDTH = 110
+            PHYSICALHEIGHT = 111
+            # self.pdf_document: fitz.Document = fitz.open(BytesIO(pdf_data))
+            # self.pdf_document: fitz.Document = fitz.open("pdf", BytesIO(pdf_data))
+            self.pdf_document: fitz.Document = fitz.open("pdf", pdf_data)
+            # self.pdf_document: fitz.Document = BytesIO(pdf_data)
+            page: fitz.Page = self.pdf_document[0]  # Retrieve the current page
 
-        pix: fitz.Pixmap = page.get_pixmap()  # Convert the page to a pixmap
-        # Create a temporary image from the PDF data
-        # img = Image.open(BytesIO(pdf_data))
-        bytes_out: BytesIO = pix.tobytes()
-        img: PIL_img.Image = PIL_img.open(BytesIO(bytes_out))
+            pix: fitz.Pixmap = page.get_pixmap()  # Convert the page to a pixmap
+            # Create a temporary image from the PDF data
+            # img = Image.open(BytesIO(pdf_data))
+            bytes_out: BytesIO = pix.tobytes()
+            img: PIL_img.Image = PIL_img.open(BytesIO(bytes_out))
 
-        self.print_pil_image(image=img, document_name=document_name)
+            self.print_pil_image(image=img, document_name=document_name)
+        else:
+            print(f"no pdf data at {self.print_pdf_from_memory.__name__}")
 
     def print_pdf_from_memory_not_working_2(self, pdf_data: bytes):
         # Get the default printer
