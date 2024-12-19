@@ -5,7 +5,10 @@ import fpdf
 import fpdf.output
 from PIL import Image as pil_img
 
-from .Draw_Helper import Draw_Helper
+try:
+    from .Draw_Helper import Draw_Helper
+except:
+    from Draw_Helper import Draw_Helper
 
 
 class Draw_Wallet:
@@ -131,228 +134,24 @@ class Draw_Wallet:
             x2=self.column_2_border,
             y2=self.top_margin + self.grid_height,
         )
-        # pdf.line(
-        #     x1=self.column_3_border,
-        #     y1=self.top_margin,
-        #     x2=self.column_3_border,
-        #     y2=self.top_margin + self.grid_height,
-        # )
 
     def save_to_output_folder(
         self,
         pdf: FPDF,
         pdf_file_name: str,
     ) -> str:
-        # current_directory = os.getcwd()
-        current_directory: str = os.path.dirname(__file__)
-        pdf_file_name: str = pdf_file_name  # "draw_an_hourglass_shape.pdf"
-        output_folder_name: str = "outputs"
-        file_path: str = os.path.join(
-            current_directory, output_folder_name, pdf_file_name
-        )
-        # pdf.output(file_path)
-        # some_page:fpdf.output.PDFPage=  PDF.pages[1]
-        # some_page.
-        # page: PDFPage = pdf.pages[1]
-
+        file_path: str = None
         try:
-            pdf.output(
-                name=file_path,
+            file_path = self.draw_helper.save_to_output_folder(
+                pdf=pdf,
+                pdf_file_name=pdf_file_name,
             )
-            print(" ")
-            print(f"saved pdf here: {file_path}")
             return file_path
         except Exception as e:
 
             print(" ")
             print(f"exception: {e}")
-
-    def add_vertical_text_to_pos(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        x: int = 0,
-        y: int = 0,
-        angle: float = 90,
-        text_size: int = 50,
-    ):
-
-        pdf.set_font("Times", size=text_size)
-        with pdf.rotation(
-            angle=angle,
-            x=x,
-            y=y,
-        ):
-            pdf.text(
-                x=x,
-                y=y,
-                text=text,
-            )
-
-    def add_vertical_text_to_pos_2(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        x: int = 0,
-        y: int = 0,
-        angle: float = 90,
-        text_size: int = 50,
-    ):
-        pdf.set_auto_page_break(False)
-        pdf.set_font("Helvetica", size=text_size)
-        with pdf.rotation(
-            angle=angle,
-            # x=x,
-            # y=y,
-        ):
-            pdf.cell(
-                w=self.img_height,
-                # x=x,
-                # y=y,
-                text=text,
-                fill=True,
-                align=fpdf.enums.Align.C,
-            )
-
-    def add_vertical_text_to_pos_3(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        # x: int = 0,
-        # y: int = 0,
-        angle: float = 90,
-        text_size: int = 50,
-    ):
-        pdf.set_auto_page_break(False)
-        pdf.set_font("Helvetica", size=text_size)
-        with pdf.rotation(
-            angle=angle,
-            # x=x,
-            # y=y,
-        ):
-            # pdf.cell(
-            #     w=self.img_height,
-            #     # x=x,
-            #     # y=y,
-            #     text=text,
-            #     # fill=True,
-            #     align=fpdf.enums.Align.C,
-            # )
-            pdf.multi_cell(
-                # w=self.img_height,
-                w=self.row_height - 3,
-                # x=x,
-                # y=y,
-                text=text,
-                fill=True,
-                align=fpdf.enums.Align.C,
-            )
-
-    def add_horizontal_text_to_pos_C(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        x: int = 0,
-        y: int = 0,
-        text_size: int = 50,
-    ):
-        pdf.set_auto_page_break(False)
-        pdf.set_font("Helvetica", size=text_size)
-        pdf.set_xy(
-            x=x,
-            y=y,
-        )
-        pdf.multi_cell(
-            text=text,
-            w=self.column_width,
-            # fill=True,
-            align=fpdf.enums.Align.C,
-        )
-
-    def add_horizontal_text_to_pos_C_width(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        x: int = 0,
-        y: int = 0,
-        text_size: int = 50,
-        text_witdth: float = 100,
-    ):
-        pdf.set_auto_page_break(False)
-        pdf.set_font("Helvetica", size=text_size)
-        pdf.set_xy(
-            x=x,
-            y=y,
-        )
-        pdf.multi_cell(
-            text=text,
-            w=text_witdth,
-            # fill=True,
-            align=fpdf.enums.Align.C,
-        )
-
-    def add_horizontal_text_to_pos_C_fill(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        x: int = 0,
-        y: int = 0,
-        text_size: int = 50,
-    ):
-        pdf.set_auto_page_break(False)
-        pdf.set_font("Helvetica", size=text_size)
-        self.font_size_1 = pdf.font_size
-        pdf.set_xy(
-            x=x,
-            y=y,
-        )
-        pdf.multi_cell(
-            text=text,
-            w=self.img_width + pdf.font_size,
-            fill=True,
-            align=fpdf.enums.Align.C,
-        )
-
-    def add_horizontal_text_to_pos_L(
-        self,
-        pdf: FPDF,
-        text: str = "please enter text.",
-        x: int = 0,
-        y: int = 0,
-        text_size: int = 50,
-    ):
-        pdf.set_auto_page_break(False)
-        pdf.set_font("Helvetica", size=text_size)
-        pdf.set_xy(
-            x=x,
-            y=y,
-        )
-        pdf.multi_cell(
-            text=text,
-            w=self.img_width + self.font_size_1,
-            fill=True,
-            align=fpdf.enums.Align.L,
-        )
-
-    def add_white_sqare_to_pos(
-        self,
-        pdf: FPDF,
-        x: float = 0,
-        y: float = 0,
-        w: float = 100,
-        h: float = 100,
-    ):
-        pdf.set_fill_color(255)
-        pdf.rect(
-            x=x,
-            y=y,
-            w=w,
-            h=h,
-            # style="FD",
-            style=fpdf.enums.RenderStyle.F,
-            round_corners=True,
-            corner_radius=5,
-        )
+            return file_path
 
     def draw_wallet(
         self,
@@ -412,11 +211,13 @@ class Draw_Wallet:
             x=priv_qr_x - (self.text_size_1 / 3),
             y=priv_qr_y + self.img_height,
         )
-        self.add_vertical_text_to_pos_2(
+
+        self.draw_helper.add_vertical_text_to_pos_2(
             pdf=pdf,
             text=text_1,
             angle=text_angle,
             text_size=self.text_size_1,
+            width=self.img_height,
         )
 
         pdf.set_fill_color(0, 255, 0)  # green
@@ -427,11 +228,13 @@ class Draw_Wallet:
             x=text_2_x,
             y=text_2_y,
         )
-        self.add_vertical_text_to_pos_2(
+
+        self.draw_helper.add_vertical_text_to_pos_2(
             pdf=pdf,
             text=text_2,
             angle=text_angle,
             text_size=self.text_size_1,
+            width=self.img_height,
         )
 
         # priv_key
@@ -442,49 +245,58 @@ class Draw_Wallet:
         # column 1 row 1
         text_2_2_x: float = self.column_1_mid - (self.img_width / 2) - self.x_offset
         text_2_2_y: float = priv_qr_y + pdf.font_size
-        self.add_horizontal_text_to_pos_C_fill(
+
+        self.draw_helper.add_horizontal_text_to_pos_C_fill(
             pdf=pdf,
             text=text_2,
             x=text_2_2_x,
             y=text_2_2_y,
             text_size=self.text_size_1,
+            width=self.img_width + pdf.font_size,
         )
 
         pdf.set_fill_color(255, 255, 255)  # white
         text_2_3_y: float = text_2_2_y + pdf.font_size
-        self.add_horizontal_text_to_pos_L(
+
+        self.draw_helper.add_horizontal_text_to_pos_L(
             pdf=pdf,
             text=pub_address,
             x=text_2_2_x,
             y=text_2_3_y,
             text_size=self.text_size_1,
+            width=self.img_width + self.font_size_1,
         )
         text_1_2_y: float = (
             text_2_2_y + self.font_size_1 + self.font_size_1 + self.font_size_1
         )
         pdf.set_fill_color(255, 0, 0)  # red
-        self.add_horizontal_text_to_pos_C_fill(
+
+        self.draw_helper.add_horizontal_text_to_pos_C_fill(
             pdf=pdf,
             text=text_1,
             x=text_2_2_x,
             y=text_1_2_y,
             text_size=self.text_size_1,
+            width=self.img_width + pdf.font_size,
         )
         pdf.set_fill_color(255, 255, 255)  # white
         text_1_3_y: float = text_1_2_y + pdf.font_size
-        self.add_horizontal_text_to_pos_L(
+
+        self.draw_helper.add_horizontal_text_to_pos_L(
             pdf=pdf,
             text=priv_key,
             x=text_2_2_x,
             y=text_1_3_y,
             text_size=self.text_size_1,
+            width=self.img_width + self.font_size_1,
         )
 
         sqare_x: float = self.column_1_border + 2
         sqare_y: float = self.top_margin + self.half_height + 2
         sqare_w: float = self.column_width - 4
         sqare_h: float = self.row_height - 4
-        self.add_white_sqare_to_pos(
+
+        self.draw_helper.add_white_sqare_to_pos(
             pdf=pdf,
             x=sqare_x,
             y=sqare_y,
@@ -499,13 +311,15 @@ class Draw_Wallet:
         # Format the date and time as a string
         date_time_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
-        self.add_horizontal_text_to_pos_C(
+        self.draw_helper.add_horizontal_text_to_pos_C(
             pdf=pdf,
             text=date_time_string,
             x=date_x,
             y=date_y,
             text_size=self.text_size_2,
+            width=self.column_width,
         )
+
         logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
         logo_y = self.row_2_mid - (self.logo_height_2 / 2)
         self.draw_helper.add_image_to_pos(
@@ -550,161 +364,197 @@ class Draw_Wallet:
 
         # cerate a empty pdf
         pdf: FPDF = self.create_pdf()
-        self.draw_helper.draw_grid(
+
+        pub_address_qr_img: pil_img.Image = pil_img.open(fp=pub_qr_img_path)
+        privkey_qr_img: pil_img.Image = pil_img.open(fp=priv_qr_img_path)
+
+        self.draw_wallet_main(
             pdf=pdf,
-            line_distance=self.grid_line_distance,
-            height=self.grid_height,
-            width=self.grid_width,
-        )
-        self.draw_vert_fold_lines(pdf=pdf)
-        # public qr code to column3  and row 2
-        pub_qr_x: int = self.column_3_mid - (self.img_width / 2) - self.x_offset
-        pub_qr_y: int = self.row_2_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos(
-            pdf=pdf,
-            img_path=pub_qr_img_path,
-            width=self.img_width,
-            height=self.img_height,
-            x=pub_qr_x,
-            y=pub_qr_y,
-        )
-        # private qr code to column 2(middle) row 1
-        priv_qr_x: int = self.column_2_mid - (self.img_width / 2) - self.x_offset
-        priv_qr_y: int = self.row_1_mid - self.img_height / 2
-        self.draw_helper.add_image_to_pos(
-            pdf=pdf,
-            img_path=priv_qr_img_path,
-            width=self.img_width,
-            height=self.img_height,
-            x=priv_qr_x,
-            y=priv_qr_y,
-        )
-        # add logo to column 1 row 2
-        logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
-        logo_y: int = self.row_2_mid - self.logo_height_1 / 2
-        self.draw_helper.add_image_to_pos(
-            pdf=pdf,
-            img_path=self.doge_logo_path_2,
-            width=self.logo_width_1,
-            height=self.logo_height_1,
-            x=logo_x,
-            y=logo_y,
+            pub_address=pub_address,
+            pub_address_qr_img=pub_address_qr_img,
+            privkey=priv_key,
+            privkey_qr_img=privkey_qr_img,
         )
 
-        pdf.set_fill_color(255, 0, 0)  # red
-        text_1: str = "Private"
-        # text_size: int = 25
-        text_angle: float = 90
-        pdf.set_xy(
-            x=priv_qr_x - (self.text_size_1 / 3),
-            y=priv_qr_y + self.img_height,
-        )
-        self.add_vertical_text_to_pos_2(
-            pdf=pdf,
-            text=text_1,
-            angle=text_angle,
-            text_size=self.text_size_1,
-        )
+        # self.draw_helper.draw_grid(
+        #     pdf=pdf,
+        #     line_distance=self.grid_line_distance,
+        #     height=self.grid_height,
+        #     width=self.grid_width,
+        # )
+        # self.draw_vert_fold_lines(pdf=pdf)
+        # # public qr code to column3  and row 2
+        # pub_qr_x: int = self.column_3_mid - (self.img_width / 2) - self.x_offset
+        # pub_qr_y: int = self.row_2_mid - self.img_height / 2
+        # self.draw_helper.add_image_to_pos(
+        #     pdf=pdf,
+        #     img_path=pub_qr_img_path,
+        #     width=self.img_width,
+        #     height=self.img_height,
+        #     x=pub_qr_x,
+        #     y=pub_qr_y,
+        # )
+        # # private qr code to column 2(middle) row 1
+        # priv_qr_x: int = self.column_2_mid - (self.img_width / 2) - self.x_offset
+        # priv_qr_y: int = self.row_1_mid - self.img_height / 2
+        # self.draw_helper.add_image_to_pos(
+        #     pdf=pdf,
+        #     img_path=priv_qr_img_path,
+        #     width=self.img_width,
+        #     height=self.img_height,
+        #     x=priv_qr_x,
+        #     y=priv_qr_y,
+        # )
+        # # add logo to column 1 row 2
+        # logo_x: int = self.column_1_mid - (self.logo_width_1 / 2)  # - self.x_offset
+        # logo_y: int = self.row_2_mid - self.logo_height_1 / 2
+        # self.draw_helper.add_image_to_pos(
+        #     pdf=pdf,
+        #     img_path=self.doge_logo_path_2,
+        #     width=self.logo_width_1,
+        #     height=self.logo_height_1,
+        #     x=logo_x,
+        #     y=logo_y,
+        # )
 
-        pdf.set_fill_color(0, 255, 0)  # green
-        text_2: str = "Public"
-        text_2_x: float = pub_qr_x - (self.text_size_1 / 3)
-        text_2_y: float = pub_qr_y + self.img_height
-        pdf.set_xy(
-            x=text_2_x,
-            y=text_2_y,
-        )
-        self.add_vertical_text_to_pos_2(
-            pdf=pdf,
-            text=text_2,
-            angle=text_angle,
-            text_size=self.text_size_1,
-        )
+        # pdf.set_fill_color(255, 0, 0)  # red
+        # text_1: str = "Private"
+        # # text_size: int = 25
+        # text_angle: float = 90
+        # pdf.set_xy(
+        #     x=priv_qr_x - (self.text_size_1 / 3),
+        #     y=priv_qr_y + self.img_height,
+        # )
 
-        # priv_key
-        pdf.set_xy(
-            x=priv_qr_x + self.img_width - self.x_offset / 2,  # (self.text_size_1 / 3)
-            y=priv_qr_y + self.img_height,
-        )
-        # column 1 row 1
-        text_2_2_x: float = self.column_1_mid - (self.img_width / 2) - self.x_offset
-        text_2_2_y: float = priv_qr_y + pdf.font_size
-        self.add_horizontal_text_to_pos_C_fill(
-            pdf=pdf,
-            text=text_2,
-            x=text_2_2_x,
-            y=text_2_2_y,
-            text_size=self.text_size_1,
-        )
+        # self.draw_helper.add_vertical_text_to_pos_2(
+        #     pdf=pdf,
+        #     text=text_1,
+        #     angle=text_angle,
+        #     text_size=self.text_size_1,
+        #     width=self.img_height,
+        # )
 
-        pdf.set_fill_color(255, 255, 255)  # white
-        text_2_3_y: float = text_2_2_y + pdf.font_size
-        self.add_horizontal_text_to_pos_L(
-            pdf=pdf,
-            text=pub_address,
-            x=text_2_2_x,
-            y=text_2_3_y,
-            text_size=self.text_size_1,
-        )
-        text_1_2_y: float = (
-            text_2_2_y + self.font_size_1 + self.font_size_1 + self.font_size_1
-        )
-        pdf.set_fill_color(255, 0, 0)  # red
-        self.add_horizontal_text_to_pos_C_fill(
-            pdf=pdf,
-            text=text_1,
-            x=text_2_2_x,
-            y=text_1_2_y,
-            text_size=self.text_size_1,
-        )
-        pdf.set_fill_color(255, 255, 255)  # white
-        text_1_3_y: float = text_1_2_y + pdf.font_size
-        self.add_horizontal_text_to_pos_L(
-            pdf=pdf,
-            text=priv_key,
-            x=text_2_2_x,
-            y=text_1_3_y,
-            text_size=self.text_size_1,
-        )
+        # pdf.set_fill_color(0, 255, 0)  # green
+        # text_2: str = "Public"
+        # text_2_x: float = pub_qr_x - (self.text_size_1 / 3)
+        # text_2_y: float = pub_qr_y + self.img_height
+        # pdf.set_xy(
+        #     x=text_2_x,
+        #     y=text_2_y,
+        # )
 
-        sqare_x: float = self.column_1_border + 2
-        sqare_y: float = self.top_margin + self.half_height + 2
-        sqare_w: float = self.column_width - 4
-        sqare_h: float = self.row_height - 4
-        self.add_white_sqare_to_pos(
-            pdf=pdf,
-            x=sqare_x,
-            y=sqare_y,
-            w=sqare_w,
-            h=sqare_h,
-        )
-        date_x: int = self.column_1_border  # + (self.text_size_2 / 3)
-        date_y: int = self.top_margin + self.half_height + 2  # + (self.text_size_2 / 4)
-        # Get the current date and time
-        now = datetime.datetime.now()
+        # self.draw_helper.add_vertical_text_to_pos_2(
+        #     pdf=pdf,
+        #     text=text_2,
+        #     angle=text_angle,
+        #     text_size=self.text_size_1,
+        #     width=self.img_height,
+        # )
 
-        # Format the date and time as a string
-        date_time_string = now.strftime("%Y-%m-%d %H:%M:%S")
+        # # priv_key
+        # pdf.set_xy(
+        #     x=priv_qr_x + self.img_width - self.x_offset / 2,  # (self.text_size_1 / 3)
+        #     y=priv_qr_y + self.img_height,
+        # )
+        # # column 1 row 1
+        # text_2_2_x: float = self.column_1_mid - (self.img_width / 2) - self.x_offset
+        # text_2_2_y: float = priv_qr_y + pdf.font_size
 
-        self.add_horizontal_text_to_pos_C(
-            pdf=pdf,
-            text=date_time_string,
-            x=date_x,
-            y=date_y,
-            text_size=self.text_size_2,
-        )
-        logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
-        logo_y = self.row_2_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
-            pdf=pdf,
-            img_path=self.doge_logo_path,
-            width=self.logo_width_2,
-            height=self.logo_height_2,
-            x=logo_x,
-            y=logo_y,
-        )
-        # # #logo column 1 row 1
-        # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
+        # self.draw_helper.add_horizontal_text_to_pos_C_fill(
+        #     pdf=pdf,
+        #     text=text_2,
+        #     x=text_2_2_x,
+        #     y=text_2_2_y,
+        #     text_size=self.text_size_1,
+        #     width=self.img_width + pdf.font_size,
+        # )
+
+        # pdf.set_fill_color(255, 255, 255)  # white
+        # text_2_3_y: float = text_2_2_y + pdf.font_size
+
+        # self.draw_helper.add_horizontal_text_to_pos_L(
+        #     pdf=pdf,
+        #     text=pub_address,
+        #     x=text_2_2_x,
+        #     y=text_2_3_y,
+        #     text_size=self.text_size_1,
+        #     width=self.img_width + self.font_size_1,
+        # )
+        # text_1_2_y: float = (
+        #     text_2_2_y + self.font_size_1 + self.font_size_1 + self.font_size_1
+        # )
+        # pdf.set_fill_color(255, 0, 0)  # red
+
+        # self.draw_helper.add_horizontal_text_to_pos_C_fill(
+        #     pdf=pdf,
+        #     text=text_1,
+        #     x=text_2_2_x,
+        #     y=text_1_2_y,
+        #     text_size=self.text_size_1,
+        #     width=self.img_width + pdf.font_size,
+        # )
+        # pdf.set_fill_color(255, 255, 255)  # white
+        # text_1_3_y: float = text_1_2_y + pdf.font_size
+
+        # self.draw_helper.add_horizontal_text_to_pos_L(
+        #     pdf=pdf,
+        #     text=priv_key,
+        #     x=text_2_2_x,
+        #     y=text_1_3_y,
+        #     text_size=self.text_size_1,
+        #     width=self.img_width + self.font_size_1,
+        # )
+
+        # sqare_x: float = self.column_1_border + 2
+        # sqare_y: float = self.top_margin + self.half_height + 2
+        # sqare_w: float = self.column_width - 4
+        # sqare_h: float = self.row_height - 4
+        # self.draw_helper.add_white_sqare_to_pos(
+        #     pdf=pdf,
+        #     x=sqare_x,
+        #     y=sqare_y,
+        #     w=sqare_w,
+        #     h=sqare_h,
+        # )
+        # date_x: int = self.column_1_border  # + (self.text_size_2 / 3)
+        # date_y: int = self.top_margin + self.half_height + 2  # + (self.text_size_2 / 4)
+        # # Get the current date and time
+        # now = datetime.datetime.now()
+
+        # # Format the date and time as a string
+        # date_time_string = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        # self.draw_helper.add_horizontal_text_to_pos_C(
+        #     pdf=pdf,
+        #     text=date_time_string,
+        #     x=date_x,
+        #     y=date_y,
+        #     text_size=self.text_size_2,
+        #     width=self.column_width,
+        # )
+        # logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
+        # logo_y = self.row_2_mid - (self.logo_height_2 / 2)
+        # self.draw_helper.add_image_to_pos(
+        #     pdf=pdf,
+        #     img_path=self.doge_logo_path,
+        #     width=self.logo_width_2,
+        #     height=self.logo_height_2,
+        #     x=logo_x,
+        #     y=logo_y,
+        # )
+        # # # #logo column 1 row 1
+        # # logo_x = self.column_1_mid - (self.logo_width_2 / 2)
+        # # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
+        # # self.draw_helper.add_image_to_pos(
+        # #     pdf=pdf,
+        # #     img_path=self.doge_logo_path,
+        # #     width=self.logo_width_2,
+        # #     height=self.logo_height_2,
+        # #     x=logo_x,
+        # #     y=logo_y,
+        # # )
+        # # logo column 3 row 1
+        # logo_x = self.column_3_mid - (self.logo_width_2 / 2)
         # logo_y = self.row_1_mid - (self.logo_height_2 / 2)
         # self.draw_helper.add_image_to_pos(
         #     pdf=pdf,
@@ -714,17 +564,6 @@ class Draw_Wallet:
         #     x=logo_x,
         #     y=logo_y,
         # )
-        # logo column 3 row 1
-        logo_x = self.column_3_mid - (self.logo_width_2 / 2)
-        logo_y = self.row_1_mid - (self.logo_height_2 / 2)
-        self.draw_helper.add_image_to_pos(
-            pdf=pdf,
-            img_path=self.doge_logo_path,
-            width=self.logo_width_2,
-            height=self.logo_height_2,
-            x=logo_x,
-            y=logo_y,
-        )
         # Save the PDF to a bytes buffer
         # pdf_output: io.BytesIO = io.BytesIO()
         # pdf.output(pdf_output)
@@ -811,12 +650,13 @@ class Draw_Wallet:
             x=priv_qr_x - (self.text_size_1 / 3),
             y=priv_qr_y + self.img_height,
         )
-        self.add_vertical_text_to_pos_2(
+
+        self.draw_helper.add_vertical_text_to_pos_2(
             pdf=pdf,
             text=text_1,
             angle=text_angle,
             text_size=self.text_size_1,
-            # text_size=self.text_size_3,
+            width=self.img_height,
         )
 
         pdf.set_fill_color(0, 255, 0)  # green
@@ -827,12 +667,13 @@ class Draw_Wallet:
             x=text_2_x,
             y=text_2_y,
         )
-        self.add_vertical_text_to_pos_2(
+
+        self.draw_helper.add_vertical_text_to_pos_2(
             pdf=pdf,
             text=text_2,
             angle=text_angle,
             text_size=self.text_size_1,
-            # text_size=self.text_size_3,
+            width=self.img_height,
         )
 
         # priv_key
@@ -843,55 +684,59 @@ class Draw_Wallet:
         # column 1 row 1
         text_2_2_x: float = self.column_1_mid - (self.img_width / 2) - self.x_offset
         text_2_2_y: float = priv_qr_y + pdf.font_size
-        self.add_horizontal_text_to_pos_C_fill(
+
+        self.draw_helper.add_horizontal_text_to_pos_C_fill(
             pdf=pdf,
             text=text_2,
             x=text_2_2_x,
             y=text_2_2_y,
-            # text_size=self.text_size_1,
             text_size=self.text_size_3,
+            width=self.img_width + pdf.font_size,
         )
         # adding public address
         pdf.set_fill_color(255, 255, 255)  # white
         text_2_3_y: float = text_2_2_y + pdf.font_size
-        self.add_horizontal_text_to_pos_L(
+
+        self.draw_helper.add_horizontal_text_to_pos_L(
             pdf=pdf,
             text=pub_address,
             x=text_2_2_x,
             y=text_2_3_y,
-            # text_size=self.text_size_1,
             text_size=self.text_size_3,
+            width=self.img_width + self.font_size_1,
         )
         text_1_2_y: float = (
             text_2_2_y + self.font_size_1 + self.font_size_1 + self.font_size_1
         )
         # adding private label
         pdf.set_fill_color(255, 0, 0)  # red
-        self.add_horizontal_text_to_pos_C_fill(
+
+        self.draw_helper.add_horizontal_text_to_pos_C_fill(
             pdf=pdf,
             text=text_1,
             x=text_2_2_x,
             y=text_1_2_y,
-            # text_size=self.text_size_1,
             text_size=self.text_size_3,
+            width=self.img_width + pdf.font_size,
         )
         # adding private key
         pdf.set_fill_color(255, 255, 255)  # white
         text_1_3_y: float = text_1_2_y + pdf.font_size
-        self.add_horizontal_text_to_pos_L(
+
+        self.draw_helper.add_horizontal_text_to_pos_L(
             pdf=pdf,
             text=privkey,
             x=text_2_2_x,
             y=text_1_3_y,
-            # text_size=self.text_size_1,
             text_size=self.text_size_3,
+            width=self.img_width + self.font_size_1,
         )
 
         sqare_x: float = self.column_1_border + 2
         sqare_y: float = self.top_margin + self.half_height + 2
         sqare_w: float = self.column_width - 4
         sqare_h: float = self.row_height - 4
-        self.add_white_sqare_to_pos(
+        self.draw_helper.add_white_sqare_to_pos(
             pdf=pdf,
             x=sqare_x,
             y=sqare_y,
@@ -906,12 +751,13 @@ class Draw_Wallet:
         # Format the date and time as a string
         date_time_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
-        self.add_horizontal_text_to_pos_C(
+        self.draw_helper.add_horizontal_text_to_pos_C(
             pdf=pdf,
             text=date_time_string,
             x=date_x,
             y=date_y,
             text_size=self.text_size_2,
+            width=self.column_width,
         )
         logo_x = self.column_2_mid - (self.logo_width_2 / 2)  # - self.x_offset
         logo_y = self.row_2_mid - (self.logo_height_2 / 2)
@@ -961,7 +807,8 @@ class Draw_Wallet:
             + self.donate_y_offset
         )
         donate_text_width: float = self.column_width * self.columns_count
-        self.add_horizontal_text_to_pos_C_width(
+
+        self.draw_helper.add_horizontal_text_to_pos_C_width(
             pdf=pdf,
             text=self.donate_text,
             x=donate_text_x,
@@ -981,7 +828,7 @@ class Draw_Wallet:
             + 10
         )
         donate_text_width: float = self.column_width * self.columns_count
-        self.add_horizontal_text_to_pos_C_width(
+        self.draw_helper.add_horizontal_text_to_pos_C_width(
             pdf=pdf,
             text=self.donate_Doge_address,
             x=donate_address_x,
@@ -1021,14 +868,8 @@ class Draw_Wallet:
     def get_test_images_folder_path(
         self,
     ) -> str:
-        # current_directory: str = os.getcwd()
-        current_directory: str = os.path.dirname(__file__)
-        images_folder_name: str = "test_images"
-        images_folder_path: str = os.path.join(
-            current_directory,
-            images_folder_name,
-        )
-        return images_folder_path
+        path: str = self.draw_helper.get_test_images_folder_path()
+        return path
 
 
 def test_draw_wallet() -> str:
@@ -1098,7 +939,7 @@ def test_draw_wallet_2() -> bytes:
         test_images_folder_path,
         pub_qr_img_name,
     )
-    # pdf_as_bytes: bytes = bytes()
+
     # draw wallet on the pdf
     pdf_data: bytes = draw_wallet.draw_wallet_return_bytes(
         # pdf=pdf,
@@ -1108,12 +949,6 @@ def test_draw_wallet_2() -> bytes:
         pub_qr_img_path=pub_qr_img_path,
     )
 
-    # # saving the pdf
-    # pdf_file_name: str = "Draw_Wallet_test.pdf"
-    # file_path: str = draw_wallet.save_to_output_folder(
-    #     pdf=pdf,
-    #     pdf_file_name=pdf_file_name,
-    # )
     return pdf_data
 
 
@@ -1121,14 +956,15 @@ def test_draw_wallet_2() -> bytes:
 if __name__ == "__main__":
 
     # file_path: str = test_draw_wallet()
-    # from .PDFPrinter import PDFPrinter
-    # printer: PDFPrinter = PDFPrinter()
-    # printer.print_pdf(pdf_path=file_path)
+    # # from .PDFPrinter import PDFPrinter
+    # # printer: PDFPrinter = PDFPrinter()
+    # # printer.print_pdf(pdf_path=file_path)
+    # # print(f"pdf saved here:{file_path} ")
 
     pdf_data: bytes = test_draw_wallet_2()
-    from .ImagePrinter import ImagePrinter
+    # from .ImagePrinter import ImagePrinter
 
-    image_printer: ImagePrinter = ImagePrinter()
-    image_printer.print_pdf_from_memory(pdf_data=pdf_data)
-    print(" ")
-    print("test completed..")
+    # image_printer: ImagePrinter = ImagePrinter()
+    # image_printer.print_pdf_from_memory(pdf_data=pdf_data)
+    # print(" ")
+    # print("test completed..")

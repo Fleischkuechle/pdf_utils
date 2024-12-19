@@ -324,11 +324,11 @@ class Draw_Helper:
         # current_directory: str = os.getcwd()
         current_directory: str = os.path.dirname(__file__)
         images_folder_name: str = "test_images"
-        images_folder_path: str = os.path.join(
+        path: str = os.path.join(
             current_directory,
             images_folder_name,
         )
-        return images_folder_path
+        return path
 
 
 def test_draw_wallet() -> str:
